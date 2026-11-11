@@ -47,6 +47,17 @@ class ClusterTests(unittest.TestCase):
         result=cluster_topics(links,[])
         self.assertTrue(any(c["type"]=="keyword" and c["title"]=="painting" for c in result))
 
+    def test_creator_only_when_explicit_profile_url(self):
+        links=[
+            {"id":"p1","url":"https://www.instagram.com/creator_a/","captions":[],"folders":[]},
+            {"id":"p2","url":"https://www.instagram.com/creator_a","captions":[],"folders":[]},
+            {"id":"r1","url":"https://www.instagram.com/reel/ABC","captions":[],"folders":[]},
+        ]
+        found=cluster_topics(links,[])
+        creator=next(c for c in found if c["type"]=="creator")
+        self.assertEqual(2,creator["count"])
+        self.assertEqual("@creator_a",creator["title"])
+
     def test_reproducible_order_and_ids(self):
         links=[link("a","#design sketches"),link("b","#design ideas"),
                link("c","#gaming stream"),link("d","#gaming guide")]
