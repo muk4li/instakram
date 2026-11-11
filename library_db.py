@@ -3,6 +3,8 @@ import hashlib
 import json
 import re
 import sqlite3
+from collections import defaultdict
+from text_analysis import hashtags, keywords
 from urllib.parse import urlsplit
 from pathlib import Path
 
@@ -56,6 +58,12 @@ class Library:
             folder_id INTEGER NOT NULL REFERENCES folders(id) ON DELETE CASCADE,
             reason TEXT NOT NULL, method TEXT NOT NULL DEFAULT 'local',
             PRIMARY KEY(link_id,folder_id)
+        );
+        CREATE TABLE IF NOT EXISTS captions (
+            link_id TEXT NOT NULL REFERENCES links(id) ON DELETE CASCADE,
+            caption TEXT NOT NULL,
+            source TEXT NOT NULL,
+            PRIMARY KEY(link_id, caption, source)
         );
         CREATE TABLE IF NOT EXISTS reviews (
             link_id TEXT PRIMARY KEY REFERENCES links(id) ON DELETE CASCADE,
@@ -147,6 +155,10 @@ class Library:
                 self.conn.execute("INSERT OR IGNORE INTO links(id,url,area,chat,sender,date,kind,source) VALUES(?,?,?,?,?,?,?,?)", (uid,*(clean[k] for k in FIELDS)))
                 self.conn.execute("INSERT OR IGNORE INTO occurrences(link_id,area,chat,sender,date,kind,source) VALUES(?,?,?,?,?,?,?)",
                                   (uid,*(clean[k] for k in FIELDS if k != "url")))
+                caption = row.get("caption")
+                if isinstance(caption, str) and caption.strip():
+                    self.conn.execute("INSERT OR IGNORE INTO captions(link_id,caption,source) VALUES(?,?,?)",
+                                      (uid,caption[:5000],clean["source"]))
             self._run_rules()
             self.refresh_smart_suggestions()
         return self.all_links()
@@ -163,9 +175,28 @@ class Library:
             review = self.conn.execute("SELECT status FROM reviews WHERE link_id=?", (link["id"],)).fetchone()
             link["review_status"] = review["status"] if review else "pending"
             link["folders"] = [v[0] for v in self.conn.execute("SELECT folder_id FROM assignments WHERE link_id=? ORDER BY folder_id",(link["id"],))]
+            captions = [v[0] for v in self.conn.execute("SELECT caption FROM captions WHERE link_id=? ORDER BY rowid",(link["id"],))]
+            link["captions"] = captions
+            link["hashtags"] = sorted(set().union(*(set(hashtags(c)) for c in captions))) if captions else []
+            link["keywords"] = sorted(set().union(*(set(keywords(c)) for c in captions))) if captions else []
             link["suggestions"] = [dict(s) for s in self.conn.execute("SELECT folder_id,reason,method FROM suggestions WHERE link_id=? ORDER BY folder_id",(link["id"],))]
             links.append(link)
         return links
+
+    def text_index(self):
+        """Document-frequency: each unique link contributes at most one count per term."""
+        hashtag_links = defaultdict(set)
+        keyword_links = defaultdict(set)
+        for row in self.conn.execute("SELECT link_id,caption FROM captions"):
+            for tag in hashtags(row["caption"]):
+                hashtag_links[tag].add(row["link_id"])
+            for word in keywords(row["caption"]):
+                keyword_links[word].add(row["link_id"])
+        def pack(values):
+            return [{"term":term,"count":len(ids)} for term,ids in sorted(
+                values.items(),key=lambda x:(-len(x[1]),x[0]))]
+        return {"hashtags":pack(hashtag_links),"keywords":pack(keyword_links),
+                "links_with_captions":len({r[0] for r in self.conn.execute("SELECT link_id FROM captions")})}
 
     def assign(self, link_id, folder_id, active=True, origin="manual"):
         if not self.conn.execute("SELECT 1 FROM links WHERE id=?", (link_id,)).fetchone():
