@@ -58,6 +58,15 @@ class ClusterTests(unittest.TestCase):
         self.assertEqual(2,creator["count"])
         self.assertEqual("@creator_a",creator["title"])
 
+    def test_explicit_creator_metadata_for_reels(self):
+        links=[
+            {"id":"a","url":"https://www.instagram.com/reel/AAA","captions":[],"folders":[],"creators":["CreatorOne"]},
+            {"id":"b","url":"https://www.instagram.com/reel/BBB","captions":[],"folders":[],"creators":["creatorone"]}
+        ]
+        matches=[c for c in cluster_topics(links,[]) if c["type"]=="creator"]
+        self.assertEqual(1,len(matches))
+        self.assertEqual(2,matches[0]["count"])
+
     def test_reproducible_order_and_ids(self):
         links=[link("a","#design sketches"),link("b","#design ideas"),
                link("c","#gaming stream"),link("d","#gaming guide")]
