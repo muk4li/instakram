@@ -100,7 +100,7 @@ class Handler(BaseHTTPRequestHandler):
                     DB.local_suggestions()
                 elif route == "/api/suggest/ai":
                     self.ai_suggest(args)
-                payload = {"items": DB.all_links(), "folders": DB.folders(), "rules": DB.rules()}
+                payload = {"items": DB.all_links(), "folders": DB.folders(), "rules": DB.rules(), "settings": DB.settings()}
             self.send(200, json.dumps(payload, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
         except (ValueError, KeyError, TypeError, OSError, OverflowError, json.JSONDecodeError) as exc:
             self.send(400, json.dumps({"error": str(exc)}, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
