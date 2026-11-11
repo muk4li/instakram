@@ -14,7 +14,7 @@ DEFAULT_CATEGORIES = (
     "Lifestyle", "Inspiration", "Rezepte", "Anime", "Filme und Serien"
 )
 FIELDS = ("url", "area", "chat", "sender", "date", "kind", "source")
-RULE_FIELDS = ("url", "chat", "sender", "kind", "area", "source")
+RULE_FIELDS = ("url", "chat", "sender", "kind", "area", "source", "caption")
 MAX_NAME = 90
 
 class Library:
@@ -234,7 +234,11 @@ class Library:
             needle = rule["pattern"].casefold()
             for link in self.conn.execute("SELECT id FROM links"):
                 # Check all occurrences so the rule works even when a URL appears in multiple chats.
-                matches = self.conn.execute(f"SELECT {field} FROM occurrences WHERE link_id=?", (link["id"],)).fetchall() if field != "url" else self.conn.execute("SELECT url FROM links WHERE id=?", (link["id"],)).fetchall()
+                matches = (self.conn.execute("SELECT caption FROM captions WHERE link_id=?", (link["id"],)).fetchall()
+                           if field == "caption" else
+                           self.conn.execute("SELECT url FROM links WHERE id=?", (link["id"],)).fetchall()
+                           if field == "url" else
+                           self.conn.execute(f"SELECT {field} FROM occurrences WHERE link_id=?", (link["id"],)).fetchall())
                 if any(needle in (str(v[0] or "")).casefold() for v in matches):
                     self.conn.execute("INSERT OR IGNORE INTO assignments(link_id,folder_id,origin) VALUES(?,?,'rule')",(link["id"],rule["folder_id"]))
 
