@@ -95,3 +95,16 @@ Ollama muss auf `127.0.0.1:11434` erreichbar sein. Erst nach Klick und Einwillig
 **Technik:** SQLite-Tabellen `reviews`, `feedback`, `preferences`; neue APIs `/api/inbox/review`, `/api/inbox/undo`, `/api/inbox/settings`. Die Datenbank aktualisiert sich beim Start ohne manuelle Migration. Zur Sicherheit vorher eine Kopie von `data/instakram.sqlite3` erstellen.
 
 **Qualität:** Weitere Unit-Tests für den Posteingang, erneute Importe, Lernen und Fehlzuordnungen sind unter `tests/` angelegt. Noch nicht mit echten umfangreichen Instagram-Exportdaten vollständig validiert.
+
+
+## Hashtag- und Stichwort-Navigation (v5)
+
+Die Weboberfläche hat links **Hashtags & Wörter**. Dort siehst du eine nach Häufigkeit geordnete Liste aller Hashtags und einfacher Schlüsselwörter, die **tatsächlich in den importierten JSON-Beschreibungen** gefunden wurden. Ein Klick auf einen Begriff zeigt die zugehörigen Links. Auch auf den Kacheln sind vorhandene Beschreibungstexte und Hashtags direkt sichtbar und anklickbar.
+
+**Zählweise:** Ein Begriff wird pro **eindeutigem Link/URL nur einmal** gezählt, auch wenn der Link mehrmals geteilt oder importiert wurde und auch wenn derselbe Hashtag mehrfach in der Beschreibung steht. Groß-/Kleinschreibung wird vereinheitlicht (z. B. `#Anime` und `#anime`).
+
+**Datenquellen:** Die Erkennung berücksichtigt explizite Felder `caption`, `description`, `alt_text` oder `accessibility_caption`, soweit sie im Export vorhanden und einem Link zuordenbar sind. Eine Chat-Nachricht mit einem Reel-Link ist **nicht automatisch die Beschreibung des Reels**. Die App lädt keine fremden Instagram-Beschreibungen aus dem Netz und kann fehlende Caption-Daten nicht rekonstruieren.
+
+**Schlüsselwörter:** Eine einfache lokale Worthäufigkeits-Heuristik mit deutscher/englischer Stoppwortliste; **keine KI**, keine semantische Analyse. Dadurch können unpassende Stichwörter vorkommen. Die Zählung erfolgt auf eindeutigen URLs, nicht auf Wörtern pro Satz.
+
+**Migration:** Vorhandene SQLite-Daten bleiben erhalten; neue Tabellen werden automatisch angelegt. Damit bereits importierte Links neue Beschreibungen erhalten, musst du den JSON/ZIP-Export **einmal erneut importieren**.
