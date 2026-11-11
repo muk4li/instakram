@@ -1,44 +1,60 @@
-# instakram — Instagram-Link-Sammler
+# instakram ✦
 
-Eine lokale Desktop-App zum Sammeln von Links aus dem offiziellen Instagram-Datenexport.
+Eine **lokale Instagram-Link-Bibliothek** mit moderner Browseroberfläche. Sammle URLs aus einem privaten Chat, aus gespeicherten Reels/Posts und aus deinen Archivdaten – **ohne Instagram-Anmeldung**.
+
+## 🚀 Schnellstart (v2)
+
+Du benötigst nur **Python 3**. Keine zusätzlichen Pakete erforderlich.
+
+1. Repository herunterladen oder klonen.
+2. Im Repository-Ordner einen Terminal öffnen.
+3. Starten:
+
+   ```bash
+   python server.py
+   ```
+
+   Unter macOS/Linux gegebenenfalls `python3 server.py` verwenden.
+4. Der Browser öffnet **http://127.0.0.1:8765**. Andernfalls diese Adresse manuell öffnen.
+5. Deinen offiziellen **Instagram-Datenexport als ZIP oder JSON** per Drag-and-drop hineinziehen.
+
+**Hinweis:** Die bisherige Desktop-Version steht weiterhin über `python instagram_links.py` zur Verfügung (benötigt Tkinter).
 
 ## Funktionen
-- Instagram-Datenexport als **ZIP** oder einzelne **JSON-Datei** öffnen
-- URLs in Nachrichten, gespeicherten Inhalten und Archivdaten erkennen (soweit im Export vorhanden)
-- Links nach Bereich und privatem Chat filtern
-- Reels, Posts, Stories und andere Links unterscheiden
-- Duplikate je Bereich und Chat entfernen
-- Gefilterte Ergebnisse als **Excel-kompatible CSV** speichern
 
-## Installation / Start
+- Schöne responsive UI mit Kacheln und Listenansicht
+- Suche nach Links, Chat, Absender und Dateiname
+- Filter: Chat, gespeicherte Inhalte, Archiv, Inhaltstyp
+- Instagram-Reels, Posts und andere URLs erkennen
+- Excel-kompatiblen CSV-Export erstellen
+- **Optionale Instagram-Einbettungen:** Nur nach ausdrücklicher Zustimmung lädt die App Instagrams offizielles Embed-Skript. Öffentliche Reels und Posts *können* als Vorschau angezeigt werden. Jeder Eintrag hat stets einen „Öffnen“-Link.
 
-Voraussetzung: **Python 3** mit **Tkinter** (unter Windows und macOS bei vielen Python-Installationen enthalten, auf Linux ggf. `python3-tk` nachinstallieren).
+## Datenexport vorbereiten
 
-Repository herunterladen oder klonen und im Ordner starten:
-
-```bash
-python instagram_links.py
-```
-
-Unter einigen Linux-/macOS-Systemen stattdessen `python3 instagram_links.py` verwenden.
-
-Keine zusätzlichen Python-Pakete notwendig.
-
-## Instagram-Export anfordern
-
-In Instagram bzw. der Meta-Kontenübersicht **Deine Informationen und Berechtigungen → Deine Informationen exportieren** aufrufen, Instagram wählen und **JSON** sowie **gesamter Zeitraum** auswählen. Wenn der Export verfügbar ist, die ZIP-Datei herunterladen und im Tool öffnen.
+Instagram → Kontenübersicht → Deine Informationen und Berechtigungen → Informationen exportieren. **JSON**, gesamter Zeitraum und gewünschte Kategorien auswählen. ZIP auf deinem Rechner speichern und in instakram importieren.
 
 ## Datenschutz
-- Kein Instagram-Login erforderlich
-- Verarbeitung ausschließlich lokal und offline
-- Es werden keine Daten an Server geschickt
-- **Keine privaten Chat-Exporte oder exportierten CSV-Dateien ins öffentliche GitHub-Repository committen!**
 
-## Grenzen von v1
+- ZIP und JSON werden an einen **lokalen Python-Prozess** auf **127.0.0.1** gesendet, dort im Speicher verarbeitet und **nicht dauerhaft gespeichert**.
+- Keine Anmeldung, keine Tokens, keine Cloud-API.
+- Erst nach aktivem Einverständnis können für Embeds Netzwerkverbindungen zu **instagram.com** entstehen. Dabei können Browser-/Netzwerkdaten an Meta gehen.
+- Stelle **niemals** deine exportierten Chats, ZIP-Dateien oder CSV-Dateien in ein öffentliches GitHub-Repository.
 
-Instagram exportiert geteilte Reels/Posts nicht immer als vollständige URLs. Die App kann **nur die tatsächlich vorhandenen Links** extrahieren und fehlende Links nicht rekonstruieren. Die Zuordnung zu „Archiv“ und „Gespeichert“ erfolgt über Export-Dateipfade und ist je nach Exportstruktur möglicherweise unvollständig. Archivierte Medien müssen nicht zwangsläufig öffentliche Links haben.
+## Grenzen
 
-Die App verändert **keine** Daten auf Instagram und lädt keine Reels herunter.
+- Instagram liefert nicht immer URLs für geteilte Reels. Nur tatsächlich enthaltene Links werden erfasst.
+- Archivierte Medien haben nicht unbedingt einen eigenen öffentlichen Link.
+- Instagram-Embeds funktionieren grundsätzlich nur für **öffentliche, aktive und dafür freigegebene Posts/Reels**. Private, gelöschte, eingeschränkte Posts und Stories lassen sich nicht einbetten.
+- Die App kann nichts auf Instagram löschen, entspeichern oder verändern.
+- Die Zuordnung zu Archiv/gespeichert richtet sich nach Dateipfaden des Exports und kann unvollständig sein.
+- Vorschau ist auf 80 Kacheln bzw. 500 Zeilen begrenzt; die CSV enthält alle gefilterten Treffer.
+- Importlimit: 200 MB je Datei (JSON-Einzeldateien max. 80 MB).
 
-## Status
-Erste Version; mit Beispieldaten getestet, noch nicht mit einem echten Instagram-Gesamtexport umfassend validiert.
+## Projektstruktur
+
+- `server.py` – lokaler HTTP-Server
+- `parser_core.py` – ZIP/JSON-Parser
+- `web/index.html` – Web-App
+- `instagram_links.py` – ältere Tkinter-Version
+
+**Status:** v2 Beta. Noch nicht an einem realen großen Instagram-Export end-to-end getestet.
