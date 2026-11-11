@@ -133,7 +133,7 @@ function renderTopics(){
       document.querySelectorAll('[data-area]').forEach(b=>b.classList.toggle('active',b.dataset.area==='topics'));
       renderFolders();renderTopics();render();});
     card.className='topic-card'+(selectedTopic?.id===topic.id?' selected':'');
-    card.append(make('span','topic-type',({hashtag:'Hashtag-Thema',group:'Gruppen-Thema',keyword:'Wort-Thema'})[topic.type]||'Thema'));
+    card.append(make('span','topic-type',({hashtag:'Hashtag-Thema',group:'Gruppen-Thema',keyword:'Wort-Thema',creator:'Creator-Thema'})[topic.type]||'Thema'));
     card.append(make('strong','',topic.title),make('span','topic-count',topic.count+' Links'));
     const terms=make('div','topic-terms');
     for(const t of topic.hashtags.slice(0,3))terms.append(make('span','', '#'+t.term));
