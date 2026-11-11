@@ -108,3 +108,5 @@ Die Weboberfläche hat links **Hashtags & Wörter**. Dort siehst du eine nach H�
 **Schlüsselwörter:** Eine einfache lokale Worthäufigkeits-Heuristik mit deutscher/englischer Stoppwortliste; **keine KI**, keine semantische Analyse. Dadurch können unpassende Stichwörter vorkommen. Die Zählung erfolgt auf eindeutigen URLs, nicht auf Wörtern pro Satz.
 
 **Migration:** Vorhandene SQLite-Daten bleiben erhalten; neue Tabellen werden automatisch angelegt. Damit bereits importierte Links neue Beschreibungen erhalten, musst du den JSON/ZIP-Export **einmal erneut importieren**.
+
+**Automatische Sortierregeln:** Im Regel-Editor gibt es jetzt das Feld **„Beschreibung/Hashtag enthält“**. Beispiel: Wenn eine tatsächlich exportierte Beschreibung `#anime` enthält, den Link nach `groups/Anime` zuordnen. Regeln funktionieren auch für bereits importierte Links; sie können fehlende Beschreibungen nicht ersetzen.
