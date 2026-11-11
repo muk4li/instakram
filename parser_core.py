@@ -64,11 +64,22 @@ def format_time(value):
         return value
     return ""
 
+CAPTION_KEYS = ("caption", "description", "alt_text", "accessibility_caption")
+def caption_string(value):
+    if isinstance(value, str):
+        return value[:5000]
+    if isinstance(value, dict):
+        # Some Instagram exports wrap captions in {"text": "..."}.
+        for key in ("text", "value"):
+            if isinstance(value.get(key), str):
+                return value[key][:5000]
+    return ""
+
 def collect(doc, source):
     category = categorise(source)
     chat = conversation(source)
     results = []
-    def walk(node, sender="", date=""):
+    def walk(node, sender="", date="", caption=""):
         if isinstance(node, dict):
             for k in ("sender_name", "sender", "username", "author"):
                 if isinstance(node.get(k), str):
@@ -78,17 +89,28 @@ def collect(doc, source):
                 if k in node:
                     date = format_time(node[k]) or date
                     break
-            for value in node.values():
-                walk(value, sender, date)
+            # Only explicit description/caption fields are used. Do NOT interpret
+            # nearby chat messages or filenames as a reel's description.
+            local_caption = next((caption_string(node[k]) for k in CAPTION_KEYS
+                                  if k in node and caption_string(node[k])), "")
+            caption = local_caption or caption
+            for key, value in node.items():
+                if key in CAPTION_KEYS:
+                    # A caption can itself contain a URL.
+                    if isinstance(value, str):
+                        walk(value, sender, date, caption)
+                    continue
+                walk(value, sender, date, caption)
         elif isinstance(node, list):
             for value in node:
-                walk(value, sender, date)
+                walk(value, sender, date, caption)
         elif isinstance(node, str):
             for match in URL_PATTERN.findall(node):
                 url = url_normalize(match)
                 if url:
                     results.append({"area": category, "chat": chat, "sender": sender,
-                                    "date": date, "kind": classify(url), "url": url, "source": source})
+                                    "date": date, "kind": classify(url), "url": url,
+                                    "source": source, "caption": caption})
     walk(doc)
     return results
 
@@ -129,7 +151,7 @@ def process_bytes(data, name):
     seen = set()
     unique = []
     for r in results:
-        key = tuple(r[k] for k in ("area", "chat", "sender", "date", "url"))
+        key = tuple(r[k] for k in ("area", "chat", "sender", "date", "url", "caption"))
         if key not in seen:
             seen.add(key)
             unique.append(r)
