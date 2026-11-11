@@ -32,7 +32,17 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(data)
 
+    def _trusted_request(self):
+        host = self.headers.get("Host", "")
+        if host not in ("127.0.0.1:8765", "localhost:8765"):
+            return False
+        origin = self.headers.get("Origin")
+        return not origin or origin in ("http://127.0.0.1:8765", "http://localhost:8765")
+
     def do_GET(self):
+        if not self._trusted_request():
+            self.send(403, b"Forbidden", "text/plain")
+            return
         route = urlsplit(self.path).path
         if route == "/api/library":
             self.send(200, json.dumps({"items": DB.all_links(), "folders": DB.folders(), "rules": DB.rules()}, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
@@ -42,6 +52,9 @@ class Handler(BaseHTTPRequestHandler):
             self.send(404, b"Not found", "text/plain")
 
     def do_POST(self):
+        if not self._trusted_request():
+            self.send(403, b"Forbidden", "text/plain")
+            return
         route = urlsplit(self.path).path
         if route not in ("/api/import", "/api/folder", "/api/folder/rename", "/api/folder/delete",
                          "/api/assign", "/api/rule", "/api/rule/delete", "/api/suggest/local", "/api/suggest/ai"):
