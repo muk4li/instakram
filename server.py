@@ -45,7 +45,7 @@ class Handler(BaseHTTPRequestHandler):
             return
         route = urlsplit(self.path).path
         if route == "/api/library":
-            self.send(200, json.dumps({"items": DB.all_links(), "folders": DB.folders(), "rules": DB.rules(), "settings": DB.settings()}, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
+            self.send(200, json.dumps({"items": DB.all_links(), "folders": DB.folders(), "rules": DB.rules(), "settings": DB.settings(), "textIndex": DB.text_index()}, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
         elif route in ("/", "/index.html"):
             self.send(200, INDEX.read_bytes(), "text/html; charset=utf-8")
         else:
