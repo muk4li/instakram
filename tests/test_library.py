@@ -164,6 +164,14 @@ class HashtagKeywordTests(unittest.TestCase):
         self.db.import_rows(parsed["items"])
         self.assertEqual([], self.db.text_index()["hashtags"])
 
+    def test_rule_can_match_exported_caption(self):
+        target = next(f["id"] for f in self.db.folders() if f["path"] == "groups/Anime")
+        self.db.add_rule(target, "caption", "#anime")
+        self.db.import_rows([
+            {"url":"https://www.instagram.com/reel/TEST99/","caption":"Great #Anime scenes","area":"saved"}
+        ])
+        self.assertIn(target, self.db.all_links()[0]["folders"])
+
     def test_two_urls_can_share_same_tag(self):
         links = [
             {"url":"https://www.instagram.com/p/AAA/","caption":"#design"},
