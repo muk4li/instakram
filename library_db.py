@@ -3,6 +3,7 @@ import hashlib
 import json
 import re
 import sqlite3
+from urllib.parse import urlsplit
 from pathlib import Path
 
 DEFAULT_CATEGORIES = (
@@ -56,6 +57,22 @@ class Library:
             reason TEXT NOT NULL, method TEXT NOT NULL DEFAULT 'local',
             PRIMARY KEY(link_id,folder_id)
         );
+        CREATE TABLE IF NOT EXISTS reviews (
+            link_id TEXT PRIMARY KEY REFERENCES links(id) ON DELETE CASCADE,
+            status TEXT NOT NULL CHECK(status IN ('pending','reviewed','skipped')) DEFAULT 'pending',
+            reviewed_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
+        CREATE TABLE IF NOT EXISTS feedback (
+            link_id TEXT NOT NULL REFERENCES links(id) ON DELETE CASCADE,
+            folder_id INTEGER NOT NULL REFERENCES folders(id) ON DELETE CASCADE,
+            accepted INTEGER NOT NULL CHECK(accepted IN (0,1)),
+            PRIMARY KEY(link_id, folder_id)
+        );
+        CREATE TABLE IF NOT EXISTS preferences (
+            key TEXT PRIMARY KEY, value TEXT NOT NULL
+        );
+        INSERT OR IGNORE INTO preferences(key,value) VALUES ('auto_enabled','1');
+        INSERT OR IGNORE INTO preferences(key,value) VALUES ('threshold','95');
         """)
         with self.conn:
             root = self._create_folder("groups")
@@ -131,6 +148,7 @@ class Library:
                 self.conn.execute("INSERT OR IGNORE INTO occurrences(link_id,area,chat,sender,date,kind,source) VALUES(?,?,?,?,?,?,?)",
                                   (uid,*(clean[k] for k in FIELDS if k != "url")))
             self._run_rules()
+            self.refresh_smart_suggestions()
         return self.all_links()
 
     def all_links(self):
@@ -142,6 +160,8 @@ class Library:
                 (link["id"],))]
             link["areas"] = sorted({o["area"] for o in link["occurrences"]})
             link["chats"] = sorted({o["chat"] for o in link["occurrences"] if o["chat"]})
+            review = self.conn.execute("SELECT status FROM reviews WHERE link_id=?", (link["id"],)).fetchone()
+            link["review_status"] = review["status"] if review else "pending"
             link["folders"] = [v[0] for v in self.conn.execute("SELECT folder_id FROM assignments WHERE link_id=? ORDER BY folder_id",(link["id"],))]
             link["suggestions"] = [dict(s) for s in self.conn.execute("SELECT folder_id,reason,method FROM suggestions WHERE link_id=? ORDER BY folder_id",(link["id"],))]
             links.append(link)
@@ -226,6 +246,114 @@ class Library:
             raise ValueError("Link nicht gefunden.")
         with self.conn:
             self.conn.execute("INSERT OR REPLACE INTO suggestions(link_id,folder_id,reason,method) VALUES(?,?,?,?)",(link_id,folder_id,str(reason)[:250],method))
+
+    def settings(self):
+        return {"auto_enabled": self.conn.execute("SELECT value FROM preferences WHERE key='auto_enabled'").fetchone()[0] == "1",
+                "threshold": int(self.conn.execute("SELECT value FROM preferences WHERE key='threshold'").fetchone()[0])}
+
+    def set_settings(self, auto_enabled, threshold):
+        threshold = int(threshold)
+        if not 80 <= threshold <= 100:
+            raise ValueError("Schwelle muss zwischen 80 und 100 liegen.")
+        with self.conn:
+            self.conn.execute("UPDATE preferences SET value=? WHERE key='auto_enabled'",("1" if auto_enabled else "0",))
+            self.conn.execute("UPDATE preferences SET value=? WHERE key='threshold'",(str(threshold),))
+            self.refresh_smart_suggestions()
+
+    @staticmethod
+    def _identity(url):
+        """Learn only from a real URL account handle or external hostname.
+        Chat sender is NOT the creator of the shared Instagram reel.
+        """
+        parsed = urlsplit(url)
+        host = (parsed.hostname or "").lower()
+        path = [p for p in parsed.path.split("/") if p]
+        if host in ("www.instagram.com","instagram.com","m.instagram.com","instagr.am"):
+            if len(path) >= 1 and path[0].lower() not in (
+                "reel","reels","p","stories","tv","explore","accounts","direct","share"):
+                return "creator:" + path[0].casefold()
+            return None
+        if host and host != "localhost":
+            return "domain:" + host
+        return None
+
+    def _learning_evidence(self, link_id, folder_id):
+        target = self.conn.execute("SELECT url FROM links WHERE id=?", (link_id,)).fetchone()
+        identity = self._identity(target["url"]) if target else None
+        if not identity:
+            return None
+        positive, negative = 0, 0
+        entries = self.conn.execute("""
+            SELECT l.url, f.accepted FROM feedback f JOIN links l ON l.id=f.link_id
+            WHERE f.folder_id=? AND l.id!=?
+        """,(folder_id,link_id))
+        for row in entries:
+            if self._identity(row["url"]) == identity:
+                if row["accepted"]:
+                    positive += 1
+                else:
+                    negative += 1
+        # This number is a heuristic evidence score, NOT a calibrated probability.
+        if positive >= 4 and negative == 0:
+            return (95, f"{positive} bestätigte Links von {identity}, keine Ablehnung")
+        if positive >= 2 and negative == 0:
+            return (80, f"{positive} bestätigte Links von {identity}")
+        return None
+
+    def refresh_smart_suggestions(self):
+        """Recalculate suggestions, retaining manual classification and user's explicit rejections."""
+        settings = self.settings()
+        candidates = list(self.conn.execute("SELECT id FROM links"))
+        destinations = list(self.conn.execute("SELECT id FROM folders WHERE path LIKE 'groups/%'"))
+        # Remove only machine-generated learned suggestions, keep legacy keyword/Ollama proposals.
+        self.conn.execute("DELETE FROM suggestions WHERE method='learned'")
+        for link in candidates:
+            if self.conn.execute("SELECT 1 FROM reviews WHERE link_id=? AND status IN ('reviewed','skipped')",(link["id"],)).fetchone():
+                continue
+            for dest in destinations:
+                fid = dest["id"]
+                if self.conn.execute("SELECT 1 FROM feedback WHERE link_id=? AND folder_id=?",(link["id"],fid)).fetchone():
+                    continue
+                if self.conn.execute("SELECT 1 FROM assignments WHERE link_id=? AND folder_id=?",(link["id"],fid)).fetchone():
+                    continue
+                evidence = self._learning_evidence(link["id"],fid)
+                if not evidence:
+                    continue
+                score, reason = evidence
+                if settings["auto_enabled"] and score >= settings["threshold"]:
+                    self.conn.execute("INSERT OR IGNORE INTO assignments(link_id,folder_id,origin) VALUES(?,?,'rule')",(link["id"],fid))
+                else:
+                    self.conn.execute("INSERT OR IGNORE INTO suggestions(link_id,folder_id,reason,method) VALUES(?,?,?,'learned')",(link["id"],fid,f"Signal {score}/100 (keine Wahrscheinlichkeit): {reason}"))
+
+    def review(self, link_id, folder_ids, status="reviewed"):
+        self.get_link(link_id)
+        if status not in ("reviewed","skipped","pending"):
+            raise ValueError("Ungültiger Status.")
+        if not isinstance(folder_ids,list) or len(folder_ids) > 100:
+            raise ValueError("Ungültige Ordnerliste.")
+        chosen = {int(i) for i in folder_ids}
+        for fid in chosen:
+            self._folder_row(fid)
+        with self.conn:
+            current = {r[0] for r in self.conn.execute("SELECT folder_id FROM assignments WHERE link_id=?",(link_id,))}
+            suggested = {r[0] for r in self.conn.execute("SELECT folder_id FROM suggestions WHERE link_id=?",(link_id,))}
+            # Explicit review trains from what was displayed and from prior assignments.
+            for fid in current | suggested | chosen:
+                self.conn.execute("INSERT INTO feedback(link_id,folder_id,accepted) VALUES(?,?,?) ON CONFLICT(link_id,folder_id) DO UPDATE SET accepted=excluded.accepted",
+                                  (link_id,fid,1 if fid in chosen else 0))
+            self.conn.execute("DELETE FROM assignments WHERE link_id=?",(link_id,))
+            for fid in chosen:
+                self.conn.execute("INSERT INTO assignments(link_id,folder_id,origin) VALUES(?,?,'manual')",(link_id,fid))
+            self.conn.execute("DELETE FROM suggestions WHERE link_id=?",(link_id,))
+            self.conn.execute("INSERT INTO reviews(link_id,status) VALUES(?,?) ON CONFLICT(link_id) DO UPDATE SET status=excluded.status, reviewed_at=CURRENT_TIMESTAMP",(link_id,status))
+            self.refresh_smart_suggestions()
+
+    def undo_review(self, link_id):
+        self.get_link(link_id)
+        with self.conn:
+            self.conn.execute("DELETE FROM reviews WHERE link_id=?",(link_id,))
+            self.conn.execute("DELETE FROM feedback WHERE link_id=?",(link_id,))
+            self.refresh_smart_suggestions()
 
     def get_link(self, link_id):
         row = self.conn.execute("SELECT * FROM links WHERE id=?",(link_id,)).fetchone()
