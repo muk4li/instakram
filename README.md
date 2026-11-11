@@ -58,3 +58,25 @@ Instagram → Kontenübersicht → Deine Informationen und Berechtigungen → In
 - `instagram_links.py` – ältere Tkinter-Version
 
 **Status:** v2 Beta. Noch nicht an einem realen großen Instagram-Export end-to-end getestet.
+
+
+## Ordner & Gruppen (v3)
+
+Die Bibliothek verwendet **SQLite** und speichert Links, selbst erstellte Ordner, Unterordner, Regeln und manuelle Zuordnungen dauerhaft unter `data/instakram.sqlite3`. Du kannst jeden Link **mehreren Gruppen** zuordnen. Standardmäßig sind die gewünschten Kategorien unter `groups/` vorhanden:
+
+Tech & KI, Programmieren, Gaming, Memes & Humor, Musik, Wissen & Bildung, Favoriten, Fitness & Sport, Design & Kunst, Lifestyle, Inspiration, Rezepte, Anime, Filme und Serien.
+
+In der Web-App kannst du Ordner auswählen, neue Ordner unter einem anderen Ordner anlegen, umbenennen, löschen und bei einem Link auf **Gruppen** klicken. Regeln wählen eine Gruppe und ein Feld wie URL, Absender, Chat, Typ oder Quelle und ordnen passende Links (auch bereits vorhandene) zu. Beim Entfernen einer Regel bleiben vorhandene Zuordnungen bestehen.
+
+**Vorschläge:** „Stichwort-Vorschläge“ durchsucht lokal verfügbare Link-Metadaten nach bekannten Stichwörtern. Die optionale **lokale KI** nutzt [Ollama](https://ollama.com/) mit einem zuvor auf deinem Rechner installierten Modell (Standard: `llama3.2`). Beispiel:
+
+```bash
+ollama pull llama3.2
+ollama serve
+```
+
+Ollama muss auf `127.0.0.1:11434` erreichbar sein. Erst nach Klick und Einwilligung werden **maximal 20 gefilterte Links** (URL und Metadaten) an Ollama auf deinem Computer geschickt; die KI erstellt lediglich **prüfbare Vorschläge**, keine automatische Übernahme. Ohne Reel-Inhalt ist die Erkennung zwangsläufig unvollständig. Lokale Stichwort-Vorschläge funktionieren ohne Ollama.
+
+**Datenschutz:** Die SQLite-Datei enthält persönliche Links und Metadaten. Nicht ins Repository pushen. Für einen anderen Speicherort kannst du die Umgebungsvariable `INSTAKRAM_DB` setzen. Erstelle regelmäßig eine private Sicherung der SQLite-Datei.
+
+**Migration:** Der erste Start legt die SQLite-Datei automatisch an. Ältere Exporte müssen einmalig erneut importiert werden. Importierte Links werden über ihre URL wiedererkannt; bestehende Ordner-Zuordnungen bleiben beim erneuten Import erhalten.
