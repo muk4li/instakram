@@ -273,8 +273,16 @@ class Library:
                 "reel","reels","p","stories","tv","explore","accounts","direct","share"):
                 return "creator:" + path[0].casefold()
             return None
-        if host and host != "localhost":
-            return "domain:" + host
+        # Broad publishing platforms do not identify the creator; treating their
+        # domain as a topic signal would cause many false classifications.
+        broad = ("youtube.com","youtu.be","tiktok.com","facebook.com",
+                 "twitter.com","x.com","reddit.com","pinterest.com",
+                 "threads.net","soundcloud.com","spotify.com")
+        clean_host = host[4:] if host.startswith("www.") else host
+        if clean_host and clean_host != "localhost" and not any(
+            clean_host == site or clean_host.endswith("." + site) for site in broad
+        ):
+            return "domain:" + clean_host
         return None
 
     def _learning_evidence(self, link_id, folder_id):
