@@ -41,6 +41,9 @@ def cluster_topics(links, folders):
         words -= tags
         assigned = {fid for fid in link.get("folders", []) if fid in folder_info}
         docs[uid] = {"tags": tags, "words": words, "folders": assigned}
+        for explicit in link.get("creators", []):
+            if isinstance(explicit, str) and explicit.strip():
+                creator_to_links[explicit.strip().lstrip("@").casefold()].add(uid)
         # Creator can be inferred only from a real Instagram profile URL.
         # /reel/XYZ and /p/XYZ links contain no account identity.
         parsed = urlsplit(link.get("url", ""))
