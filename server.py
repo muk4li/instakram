@@ -45,7 +45,7 @@ class Handler(BaseHTTPRequestHandler):
             return
         route = urlsplit(self.path).path
         if route == "/api/library":
-            self.send(200, json.dumps({"items": DB.all_links(), "folders": DB.folders(), "rules": DB.rules()}, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
+            self.send(200, json.dumps({"items": DB.all_links(), "folders": DB.folders(), "rules": DB.rules(), "settings": DB.settings()}, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
         elif route in ("/", "/index.html"):
             self.send(200, INDEX.read_bytes(), "text/html; charset=utf-8")
         else:
@@ -57,7 +57,7 @@ class Handler(BaseHTTPRequestHandler):
             return
         route = urlsplit(self.path).path
         if route not in ("/api/import", "/api/folder", "/api/folder/rename", "/api/folder/delete",
-                         "/api/assign", "/api/rule", "/api/rule/delete", "/api/suggest/local", "/api/suggest/ai"):
+                         "/api/assign", "/api/inbox/review", "/api/inbox/undo", "/api/inbox/settings", "/api/rule", "/api/rule/delete", "/api/suggest/local", "/api/suggest/ai"):
             self.send(404, b"Not found", "text/plain")
             return
         try:
@@ -86,6 +86,12 @@ class Handler(BaseHTTPRequestHandler):
                     DB.delete_folder(int(args["folder_id"]))
                 elif route == "/api/assign":
                     DB.assign(args["link_id"], int(args["folder_id"]), bool(args.get("active", True)))
+                elif route == "/api/inbox/review":
+                    DB.review(str(args["link_id"]), args["folder_ids"], args.get("status","reviewed"))
+                elif route == "/api/inbox/undo":
+                    DB.undo_review(str(args["link_id"]))
+                elif route == "/api/inbox/settings":
+                    DB.set_settings(args.get("auto_enabled", False), args.get("threshold",95))
                 elif route == "/api/rule":
                     DB.add_rule(int(args["folder_id"]), args.get("field"), args.get("pattern"))
                 elif route == "/api/rule/delete":
