@@ -80,3 +80,18 @@ Ollama muss auf `127.0.0.1:11434` erreichbar sein. Erst nach Klick und Einwillig
 **Datenschutz:** Die SQLite-Datei enthält persönliche Links und Metadaten. Nicht ins Repository pushen. Für einen anderen Speicherort kannst du die Umgebungsvariable `INSTAKRAM_DB` setzen. Erstelle regelmäßig eine private Sicherung der SQLite-Datei.
 
 **Migration:** Der erste Start legt die SQLite-Datei automatisch an. Ältere Exporte müssen einmalig erneut importiert werden. Importierte Links werden über ihre URL wiedererkannt; bestehende Ordner-Zuordnungen bleiben beim erneuten Import erhalten.
+
+
+## Intelligenter Posteingang (v4)
+
+- Neue oder noch nicht geprüfte Links erscheinen unter **Posteingang**. Dort auf **Prüfen** klicken, in der Ordnerliste einen oder mehrere Ordner auswählen und mit **Zuordnung bestätigen** abschließen. **Später prüfen** blendet den Link aus dem Posteingang aus; das wird nicht als negative Trainingsentscheidung behandelt.
+- **Erneut prüfen** setzt eine bereits bestätigte Entscheidung zurück.
+- Jede bestätigte Auswahl wird **nur lokal** als Feedback gespeichert. Das System merkt sich bestätigte und abgelehnte Kategorien.
+- **Lernvorschläge:** Für wiedererkennbare Instagram-Profilnamen in der URL und spezifische externe Domains entstehen nach mindestens zwei gleichartigen, positiven Bestätigungen Vorschläge. Nach mindestens vier bestätigten Beispielen und ohne Gegenbeispiel können Links automatisch einer Gruppe zugeordnet werden, wenn die Automatik eingeschaltet und die Schwelle auf 95 steht.
+- Die Bewertung **80/95 ist ein heuristischer Signalwert, keine statistisch kalibrierte Wahrscheinlichkeit**. Das System analysiert weder automatisch Videos noch erkennt es Creator aus Reel-IDs oder den Absendern eines Chats.
+- In den Posteingang-Einstellungen kannst du die automatische Gruppenzuordnung deaktivieren oder die Schwelle verändern. Automatisch zugeordnete Links bleiben vorerst zur Sichtprüfung im Posteingang, bis du sie bestätigst.
+- **Eigene Regeln** aus v3 bleiben aktiv und können unabhängig davon sofort zuordnen. Die vorhandene optionale Ollama-Funktion erzeugt weiterhin Vorschläge, keine automatische Videoanalyse.
+
+**Technik:** SQLite-Tabellen `reviews`, `feedback`, `preferences`; neue APIs `/api/inbox/review`, `/api/inbox/undo`, `/api/inbox/settings`. Die Datenbank aktualisiert sich beim Start ohne manuelle Migration. Zur Sicherheit vorher eine Kopie von `data/instakram.sqlite3` erstellen.
+
+**Qualität:** Weitere Unit-Tests für den Posteingang, erneute Importe, Lernen und Fehlzuordnungen sind unter `tests/` angelegt. Noch nicht mit echten umfangreichen Instagram-Exportdaten vollständig validiert.
