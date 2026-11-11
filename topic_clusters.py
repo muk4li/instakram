@@ -6,6 +6,7 @@ Clusters are discoverable views, not changes to the user's own folders.
 from collections import Counter, defaultdict
 from hashlib import sha256
 from itertools import combinations
+from urllib.parse import urlsplit
 from text_analysis import hashtags, keywords
 
 MAX_TERMS = 250
@@ -26,6 +27,7 @@ def cluster_topics(links, folders):
     tags_to_links = defaultdict(set)
     words_to_links = defaultdict(set)
     folder_to_links = defaultdict(set)
+    creator_to_links = defaultdict(set)
     folder_info = {f["id"]: f for f in folders}
 
     for link in links:
@@ -39,6 +41,14 @@ def cluster_topics(links, folders):
         words -= tags
         assigned = {fid for fid in link.get("folders", []) if fid in folder_info}
         docs[uid] = {"tags": tags, "words": words, "folders": assigned}
+        # Creator can be inferred only from a real Instagram profile URL.
+        # /reel/XYZ and /p/XYZ links contain no account identity.
+        parsed = urlsplit(link.get("url", ""))
+        if (parsed.hostname or "").lower() in ("instagram.com", "www.instagram.com", "m.instagram.com"):
+            parts = [p for p in parsed.path.split("/") if p]
+            reserved = {"reel","reels","p","stories","tv","explore","accounts","direct","share"}
+            if len(parts) == 1 and parts[0].lower() not in reserved:
+                creator_to_links[parts[0].casefold()].add(uid)
         for t in tags:
             tags_to_links[t].add(uid)
         for w in words:
@@ -93,6 +103,12 @@ def cluster_topics(links, folders):
             groups.append({"type": "group", "title": folder["name"],
                            "links": matched, "seed_terms": [], "folder_ids": [fid]})
 
+    # Profile-URL clusters (does not infer creators of Reel permalinks).
+    for handle, matched in sorted(creator_to_links.items()):
+        if len(matched) >= MIN_LINKS:
+            groups.append({"type": "creator", "title": "@" + handle,
+                           "links": matched, "seed_terms": [], "folder_ids": []})
+
     # Fallback keyword topics, but avoid topics identical to existing hashtag clusters.
     existing = [g["links"] for g in groups]
     ranked_words = sorted(words_to_links, key=lambda w: (-len(words_to_links[w]), w))[:MAX_TERMS]
@@ -122,13 +138,14 @@ def cluster_topics(links, folders):
             "id": sha256(identity.encode("utf-8")).hexdigest()[:16],
             "title": group["title"], "type": group["type"],
             "count": len(matched), "link_ids": sorted(matched),
-            "hashtags": [{"term": t, "count": n} for t, n in tag_counts.most_common(7)],
-            "keywords": [{"term": t, "count": n} for t, n in word_counts.most_common(7)],
+            "hashtags": [{"term": t, "count": n} for t, n in sorted(tag_counts.items(), key=lambda x:(-x[1],x[0]))[:7]],
+            "keywords": [{"term": t, "count": n} for t, n in sorted(word_counts.items(), key=lambda x:(-x[1],x[0]))[:7]],
             "folder_ids": group["folder_ids"],
             "explanation": ("Gemeinsame exportierte Hashtags" if group["type"] == "hashtag"
                             else "Vorhandene Gruppenzuordnungen" if group["type"] == "group"
+                            else "Wiederkehrende Instagram-Profil-URLs" if group["type"] == "creator"
                             else "Häufige Wörter aus exportierten Beschreibungen")
         })
 
-    output.sort(key=lambda g: (-g["count"], {"group":0,"hashtag":1,"keyword":2}[g["type"]], g["title"].casefold()))
+    output.sort(key=lambda g: (-g["count"], {"group":0,"hashtag":1,"creator":2,"keyword":3}[g["type"]], g["title"].casefold()))
     return output[:MAX_CLUSTERS]
