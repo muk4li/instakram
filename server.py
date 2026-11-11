@@ -11,6 +11,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 from parser_core import MAX_ARCHIVE_BYTES, process_bytes
 from library_db import Library
+from topic_clusters import cluster_topics
 
 HERE = Path(__file__).resolve().parent
 DB = Library(Path(os.environ.get('INSTAKRAM_DB', str(HERE / 'data' / 'instakram.sqlite3'))))
@@ -44,7 +45,10 @@ class Handler(BaseHTTPRequestHandler):
             self.send(403, b"Forbidden", "text/plain")
             return
         route = urlsplit(self.path).path
-        if route == "/api/library":
+        if route == "/api/topics":
+            topics = cluster_topics(DB.all_links(), DB.folders())
+            self.send(200, json.dumps({"topics": topics}, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
+        elif route == "/api/library":
             self.send(200, json.dumps({"items": DB.all_links(), "folders": DB.folders(), "rules": DB.rules(), "settings": DB.settings(), "textIndex": DB.text_index()}, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
         elif route in ("/", "/index.html"):
             self.send(200, INDEX.read_bytes(), "text/html; charset=utf-8")
@@ -57,7 +61,7 @@ class Handler(BaseHTTPRequestHandler):
             return
         route = urlsplit(self.path).path
         if route not in ("/api/import", "/api/folder", "/api/folder/rename", "/api/folder/delete",
-                         "/api/assign", "/api/inbox/review", "/api/inbox/undo", "/api/inbox/settings", "/api/rule", "/api/rule/delete", "/api/suggest/local", "/api/suggest/ai"):
+                         "/api/assign", "/api/topics/assign", "/api/inbox/review", "/api/inbox/undo", "/api/inbox/settings", "/api/rule", "/api/rule/delete", "/api/suggest/local", "/api/suggest/ai"):
             self.send(404, b"Not found", "text/plain")
             return
         try:
@@ -86,6 +90,16 @@ class Handler(BaseHTTPRequestHandler):
                     DB.delete_folder(int(args["folder_id"]))
                 elif route == "/api/assign":
                     DB.assign(args["link_id"], int(args["folder_id"]), bool(args.get("active", True)))
+                elif route == "/api/topics/assign":
+                    topic_id = str(args["topic_id"])
+                    folder_id = int(args["folder_id"])
+                    topic = next((t for t in cluster_topics(DB.all_links(), DB.folders()) if t["id"] == topic_id), None)
+                    if topic is None:
+                        raise ValueError("Cluster wurde verändert. Bitte Themen aktualisieren.")
+                    if not topic["link_ids"] or len(topic["link_ids"]) > 500:
+                        raise ValueError("Es können maximal 500 Links auf einmal zugeordnet werden.")
+                    for link_id in topic["link_ids"]:
+                        DB.assign(link_id, folder_id, True)
                 elif route == "/api/inbox/review":
                     DB.review(str(args["link_id"]), args["folder_ids"], args.get("status","reviewed"))
                 elif route == "/api/inbox/undo":
