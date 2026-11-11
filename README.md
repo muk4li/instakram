@@ -110,3 +110,17 @@ Die Weboberfläche hat links **Hashtags & Wörter**. Dort siehst du eine nach H�
 **Migration:** Vorhandene SQLite-Daten bleiben erhalten; neue Tabellen werden automatisch angelegt. Damit bereits importierte Links neue Beschreibungen erhalten, musst du den JSON/ZIP-Export **einmal erneut importieren**.
 
 **Automatische Sortierregeln:** Im Regel-Editor gibt es jetzt das Feld **„Beschreibung/Hashtag enthält“**. Beispiel: Wenn eine tatsächlich exportierte Beschreibung `#anime` enthält, den Link nach `groups/Anime` zuordnen. Regeln funktionieren auch für bereits importierte Links; sie können fehlende Beschreibungen nicht ersetzen.
+
+## Themencluster (v6)
+
+In der linken Navigation findest du **Themencluster**. Die lokale Analyse stellt Themenansichten aus gemeinsamen exportierten Hashtags, wiederkehrenden Wörtern, vorhandenen Gruppenzuordnungen und expliziten Instagram-Profil-URLs zusammen.
+
+- **Hashtag-Themen:** Mindestens zwei eindeutige Links müssen das Hashtag enthalten. Stark gemeinsam auftretende Hashtags werden zusammengefasst.
+- **Wort-Themen:** Ein Wort muss in den Beschreibungen von mindestens drei eindeutigen Links vorkommen. Eine einfache Stoppwortliste entfernt häufige Funktionswörter.
+- **Gruppen-Themen:** Deine vorhandenen `groups/...`-Zuordnungen mit mindestens zwei Links werden als Cluster angezeigt.
+- **Creator-Themen:** Nur bei ausdrücklich erkennbaren Instagram-Profil-URLs. Die üblichen Reel- und Post-Permalinks enthalten keine verlässliche Creator-ID; solche Accounts werden nicht erraten.
+- **Überlappende Themen:** Ein Link darf in mehreren Themenclustern erscheinen.
+- **Navigation:** Cluster öffnen und die erkannten Links in der Bibliothek ansehen. Über „Links zu Gruppe hinzufügen“ kannst du **nach ausdrücklicher Bestätigung** höchstens 500 Links einem bestehenden Ordner zuordnen.
+- **Sicher und lokal:** Kein Scraping, keine Cloud-KI und keine Änderungen an Instagram. Clustervorschläge sind berechnete Ansichten; die dauerhaften Ordnerzuordnungen bleiben in SQLite.
+
+Die Clustererkennung ist heuristisch, keine semantische Videoanalyse. Sie erkennt keine Themen in fremden Reels, wenn Instagram keine passenden Texte oder Metadaten exportiert. Es werden höchstens 80 Cluster angezeigt, um die Oberfläche übersichtlich zu halten.
