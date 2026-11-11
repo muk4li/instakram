@@ -301,29 +301,47 @@ class Library:
         return None
 
     def refresh_smart_suggestions(self):
-        """Recalculate suggestions, retaining manual classification and user's explicit rejections."""
+        """Recompute human-reviewable suggestions from grouped feedback evidence."""
         settings = self.settings()
-        candidates = list(self.conn.execute("SELECT id FROM links"))
-        destinations = list(self.conn.execute("SELECT id FROM folders WHERE path LIKE 'groups/%'"))
-        # Remove only machine-generated learned suggestions, keep legacy keyword/Ollama proposals.
+        rows = list(self.conn.execute("SELECT id,url FROM links"))
+        feedback = list(self.conn.execute("""
+            SELECT f.link_id, f.folder_id, f.accepted, l.url
+            FROM feedback f JOIN links l ON l.id=f.link_id
+        """))
+        counts = {}
+        for f in feedback:
+            identity = self._identity(f["url"])
+            if identity:
+                key = (identity, f["folder_id"])
+                item = counts.setdefault(key, {"yes":set(),"no":set()})
+                item["yes" if f["accepted"] else "no"].add(f["link_id"])
+        assigned = {(r["link_id"],r["folder_id"]) for r in self.conn.execute("SELECT link_id,folder_id FROM assignments")}
+        rejected = {(r["link_id"],r["folder_id"]) for r in feedback}
+        resolved = {r["link_id"] for r in self.conn.execute("SELECT link_id FROM reviews WHERE status IN ('reviewed','skipped')")}
+        folders = [r["id"] for r in self.conn.execute("SELECT id FROM folders WHERE path LIKE 'groups/%'")]
         self.conn.execute("DELETE FROM suggestions WHERE method='learned'")
-        for link in candidates:
-            if self.conn.execute("SELECT 1 FROM reviews WHERE link_id=? AND status IN ('reviewed','skipped')",(link["id"],)).fetchone():
+        for row in rows:
+            uid = row["id"]
+            identity = self._identity(row["url"])
+            if uid in resolved or not identity:
                 continue
-            for dest in destinations:
-                fid = dest["id"]
-                if self.conn.execute("SELECT 1 FROM feedback WHERE link_id=? AND folder_id=?",(link["id"],fid)).fetchone():
+            for fid in folders:
+                if (uid,fid) in assigned or (uid,fid) in rejected:
                     continue
-                if self.conn.execute("SELECT 1 FROM assignments WHERE link_id=? AND folder_id=?",(link["id"],fid)).fetchone():
-                    continue
-                evidence = self._learning_evidence(link["id"],fid)
+                evidence = counts.get((identity,fid))
                 if not evidence:
                     continue
-                score, reason = evidence
+                yes = len(evidence["yes"] - {uid})
+                no = len(evidence["no"] - {uid})
+                if no or yes < 2:
+                    continue
+                score = 95 if yes >= 4 else 80
+                reason = f"{yes} bestätigte Zuordnungen für {identity} (heuristisches Signal, keine Wahrscheinlichkeit)"
                 if settings["auto_enabled"] and score >= settings["threshold"]:
-                    self.conn.execute("INSERT OR IGNORE INTO assignments(link_id,folder_id,origin) VALUES(?,?,'rule')",(link["id"],fid))
+                    self.conn.execute("INSERT OR IGNORE INTO assignments(link_id,folder_id,origin) VALUES(?,?,'rule')",(uid,fid))
+                    assigned.add((uid,fid))
                 else:
-                    self.conn.execute("INSERT OR IGNORE INTO suggestions(link_id,folder_id,reason,method) VALUES(?,?,?,'learned')",(link["id"],fid,f"Signal {score}/100 (keine Wahrscheinlichkeit): {reason}"))
+                    self.conn.execute("INSERT OR IGNORE INTO suggestions(link_id,folder_id,reason,method) VALUES(?,?,?,'learned')",(uid,fid,f"Signal {score}/100: {reason}"))
 
     def review(self, link_id, folder_ids, status="reviewed"):
         self.get_link(link_id)
@@ -335,6 +353,9 @@ class Library:
         for fid in chosen:
             self._folder_row(fid)
         with self.conn:
+            if status == "skipped":
+                self.conn.execute("INSERT INTO reviews(link_id,status) VALUES(?,'skipped') ON CONFLICT(link_id) DO UPDATE SET status='skipped', reviewed_at=CURRENT_TIMESTAMP",(link_id,))
+                return
             current = {r[0] for r in self.conn.execute("SELECT folder_id FROM assignments WHERE link_id=?",(link_id,))}
             suggested = {r[0] for r in self.conn.execute("SELECT folder_id FROM suggestions WHERE link_id=?",(link_id,))}
             # Explicit review trains from what was displayed and from prior assignments.
