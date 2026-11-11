@@ -59,6 +59,12 @@ class Library:
             reason TEXT NOT NULL, method TEXT NOT NULL DEFAULT 'local',
             PRIMARY KEY(link_id,folder_id)
         );
+        CREATE TABLE IF NOT EXISTS creators (
+            link_id TEXT NOT NULL REFERENCES links(id) ON DELETE CASCADE,
+            creator TEXT NOT NULL,
+            source TEXT NOT NULL,
+            PRIMARY KEY(link_id, creator, source)
+        );
         CREATE TABLE IF NOT EXISTS captions (
             link_id TEXT NOT NULL REFERENCES links(id) ON DELETE CASCADE,
             caption TEXT NOT NULL,
@@ -155,6 +161,10 @@ class Library:
                 self.conn.execute("INSERT OR IGNORE INTO links(id,url,area,chat,sender,date,kind,source) VALUES(?,?,?,?,?,?,?,?)", (uid,*(clean[k] for k in FIELDS)))
                 self.conn.execute("INSERT OR IGNORE INTO occurrences(link_id,area,chat,sender,date,kind,source) VALUES(?,?,?,?,?,?,?)",
                                   (uid,*(clean[k] for k in FIELDS if k != "url")))
+                creator = row.get("creator")
+                if isinstance(creator, str) and creator.strip():
+                    self.conn.execute("INSERT OR IGNORE INTO creators(link_id,creator,source) VALUES(?,?,?)",
+                                      (uid,creator.strip()[:100],clean["source"]))
                 caption = row.get("caption")
                 if isinstance(caption, str) and caption.strip():
                     self.conn.execute("INSERT OR IGNORE INTO captions(link_id,caption,source) VALUES(?,?,?)",
@@ -176,6 +186,8 @@ class Library:
             link["review_status"] = review["status"] if review else "pending"
             link["folders"] = [v[0] for v in self.conn.execute("SELECT folder_id FROM assignments WHERE link_id=? ORDER BY folder_id",(link["id"],))]
             captions = [v[0] for v in self.conn.execute("SELECT caption FROM captions WHERE link_id=? ORDER BY rowid",(link["id"],))]
+            link["creators"] = sorted({r[0] for r in self.conn.execute(
+                "SELECT creator FROM creators WHERE link_id=?", (link["id"],))})
             link["captions"] = captions
             link["hashtags"] = sorted(set().union(*(set(hashtags(c)) for c in captions))) if captions else []
             link["keywords"] = sorted(set().union(*(set(keywords(c)) for c in captions))) if captions else []
