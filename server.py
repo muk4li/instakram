@@ -12,10 +12,8 @@ from urllib.parse import urlsplit
 from parser_core import MAX_ARCHIVE_BYTES, process_bytes
 from library_db import Library
 
-DB = Library(Path(os.environ.get('INSTAKRAM_DB', str(HERE / 'data' / 'instakram.sqlite3'))))
-MAX_BODY = 200 * 1024 * 1024
-
 HERE = Path(__file__).resolve().parent
+DB = Library(Path(os.environ.get('INSTAKRAM_DB', str(HERE / 'data' / 'instakram.sqlite3'))))
 INDEX = HERE / "web" / "index.html"
 HOST, PORT = "127.0.0.1", 8765
 
