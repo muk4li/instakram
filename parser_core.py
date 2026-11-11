@@ -79,7 +79,7 @@ def collect(doc, source):
     category = categorise(source)
     chat = conversation(source)
     results = []
-    def walk(node, sender="", date="", caption=""):
+    def walk(node, sender="", date="", caption="", creator=""):
         if isinstance(node, dict):
             for k in ("sender_name", "sender", "username", "author"):
                 if isinstance(node.get(k), str):
@@ -88,6 +88,11 @@ def collect(doc, source):
             for k in ("timestamp_ms", "timestamp", "creation_timestamp", "saved_at", "date", "time"):
                 if k in node:
                     date = format_time(node[k]) or date
+                    break
+            for key in ("creator_username", "owner_username", "media_owner_username"):
+                val = node.get(key)
+                if isinstance(val, str) and 1 <= len(val.strip()) <= 100:
+                    creator = val.strip().lstrip("@")
                     break
             # Only explicit description/caption fields are used. Do NOT interpret
             # nearby chat messages or filenames as a reel's description.
@@ -98,19 +103,19 @@ def collect(doc, source):
                 if key in CAPTION_KEYS:
                     # A caption can itself contain a URL.
                     if isinstance(value, str):
-                        walk(value, sender, date, caption)
+                        walk(value, sender, date, caption, creator)
                     continue
-                walk(value, sender, date, caption)
+                walk(value, sender, date, caption, creator)
         elif isinstance(node, list):
             for value in node:
-                walk(value, sender, date, caption)
+                walk(value, sender, date, caption, creator)
         elif isinstance(node, str):
             for match in URL_PATTERN.findall(node):
                 url = url_normalize(match)
                 if url:
                     results.append({"area": category, "chat": chat, "sender": sender,
                                     "date": date, "kind": classify(url), "url": url,
-                                    "source": source, "caption": caption})
+                                    "source": source, "caption": caption, "creator": creator})
     walk(doc)
     return results
 
@@ -151,7 +156,7 @@ def process_bytes(data, name):
     seen = set()
     unique = []
     for r in results:
-        key = tuple(r[k] for k in ("area", "chat", "sender", "date", "url", "caption"))
+        key = tuple(r[k] for k in ("area", "chat", "sender", "date", "url", "caption", "creator"))
         if key not in seen:
             seen.add(key)
             unique.append(r)
