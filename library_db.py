@@ -137,6 +137,11 @@ class Library:
         links = []
         for r in self.conn.execute("SELECT * FROM links ORDER BY date DESC, id"):
             link = dict(r)
+            link["occurrences"] = [dict(o) for o in self.conn.execute(
+                "SELECT area,chat,sender,date,kind,source FROM occurrences WHERE link_id=? ORDER BY date DESC",
+                (link["id"],))]
+            link["areas"] = sorted({o["area"] for o in link["occurrences"]})
+            link["chats"] = sorted({o["chat"] for o in link["occurrences"] if o["chat"]})
             link["folders"] = [v[0] for v in self.conn.execute("SELECT folder_id FROM assignments WHERE link_id=? ORDER BY folder_id",(link["id"],))]
             link["suggestions"] = [dict(s) for s in self.conn.execute("SELECT folder_id,reason,method FROM suggestions WHERE link_id=? ORDER BY folder_id",(link["id"],))]
             links.append(link)
