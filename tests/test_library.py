@@ -135,5 +135,43 @@ class SmartInboxTests(unittest.TestCase):
         self.assertNotIn(self.folder,candidate["folders"])
         self.assertTrue(any(s["folder_id"]==self.folder for s in candidate["suggestions"]))
 
+class HashtagKeywordTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.db = Library(Path(self.tmp.name) / "terms.sqlite3")
+
+    def test_caption_tags_keywords_and_unique_link_counts(self):
+        caption = "New #Python #AI! Python tutorial and programming tips. #Python"
+        doc = {"posts":[{"caption":caption, "link":"https://www.instagram.com/reel/AAA123/"}]}
+        result = process_bytes(json.dumps(doc).encode("utf-8"),"media/posts_1.json")
+        self.assertEqual(caption, result["items"][0]["caption"])
+        self.db.import_rows(result["items"])
+        # Repeated imports and repeated tags within one caption must not inflate counts.
+        self.db.import_rows(result["items"])
+        summary = self.db.text_index()
+        self.assertEqual(1, next(x["count"] for x in summary["hashtags"] if x["term"] == "python"))
+        self.assertEqual(1, next(x["count"] for x in summary["hashtags"] if x["term"] == "ai"))
+        self.assertEqual(1, next(x["count"] for x in summary["keywords"] if x["term"] == "python"))
+        self.assertEqual(1, summary["links_with_captions"])
+
+    def test_chat_message_is_not_assumed_reel_caption(self):
+        doc = {"messages":[{"content":"This is #Gaming https://www.instagram.com/reel/QWER123/",
+                            "sender_name":"Friend"}]}
+        parsed = process_bytes(json.dumps(doc).encode("utf-8"),
+                               "messages/inbox/friend/message_1.json")
+        self.assertEqual("", parsed["items"][0]["caption"])
+        self.db.import_rows(parsed["items"])
+        self.assertEqual([], self.db.text_index()["hashtags"])
+
+    def test_two_urls_can_share_same_tag(self):
+        links = [
+            {"url":"https://www.instagram.com/p/AAA/","caption":"#design"},
+            {"url":"https://www.instagram.com/p/BBB/","caption":"#Design #DESIGN"}
+        ]
+        self.db.import_rows(links)
+        entry = next(x for x in self.db.text_index()["hashtags"] if x["term"] == "design")
+        self.assertEqual(2,entry["count"])
+
 if __name__ == "__main__":
     unittest.main()
