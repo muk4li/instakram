@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Local-only web UI; no external dependencies, network calls, or persistence."""
+"""Local-only web UI, with SQLite persistence and optional opt-in Ollama."""
 import json
 import os
 import urllib.request
 import urllib.error
 import threading
 import webbrowser
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from urllib.parse import urlsplit
 from parser_core import MAX_ARCHIVE_BYTES, process_bytes
@@ -146,7 +146,7 @@ class Handler(BaseHTTPRequestHandler):
         return
 
 if __name__ == "__main__":
-    server = ThreadingHTTPServer((HOST, PORT), Handler)
+    server = HTTPServer((HOST, PORT), Handler)
     print(f"instakram läuft lokal: http://{HOST}:{PORT}")
     threading.Timer(0.8, lambda: webbrowser.open(f"http://{HOST}:{PORT}")).start()
     try:
