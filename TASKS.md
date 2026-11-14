@@ -24,6 +24,14 @@
 - Status: Offen. Nur lokal durch den Nutzer; Daten und Ergebnisse nicht
   committen, nur anonymisierte Befunde zurückmelden.
 
-## IMP-002 – Importlimit auf 800 MB erhöhen
-- Status: In Review. Nutzer-Export ist 550 MB. Limit in Parser und Web-UI,
-  Konsistenztest; synthetischer 600-MB-Upload über HTTP lokal geprüft.
+## IMP-002 – Importlimits erhöhen
+- Status: In Review (PR #4). ZIP 200 → 800 MB (Nutzer-Export 524 MB),
+  JSON-Einzeldatei 80 → 150 MB (Likes-Datei des Nutzers 88,9 MB).
+  Likes sowie Follower/Werbung/Login werden bewusst mitimportiert (Nutzerentscheidung).
+
+## PERF-001 – API für große Bibliotheken
+- Status: Offen, zusammen mit der neuen UI planen.
+- `/api/library` und jede POST-Antwort liefern alle Links (`all_links()`, mehrere
+  Abfragen pro Link). Synthetisch gemessen: 100 000 Links 2 s / 55 MB,
+  500 000 Links 11 s / 275 MB je Aktion. Nötig: Paginierung/Filter serverseitig,
+  POST-Antworten nur mit geänderten Daten.
