@@ -56,6 +56,12 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 .secondary{background:#282330;border:1px solid #42394d;color:#eee9ff;padding:9px 13px;border-radius:10px;font-size:13px}
 .buttonrow{display:flex;gap:8px;flex-wrap:wrap}
 .hint{color:#888199;font-size:12px;line-height:1.55;margin:10px 0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.notice.busy{display:flex;align-items:center;gap:10px}
+.notice.busy::before{content:"";flex:none;width:16px;height:16px;border-radius:50%;border:2px solid #5c4870;border-top-color:#d9a8ff;animation:spin .8s linear infinite}
+.loading{display:flex;flex-direction:column;align-items:center;gap:14px;padding:70px 20px;color:#aaa4b8;font-size:14px}
+.loading::before{content:"";width:38px;height:38px;border-radius:50%;border:3px solid #3a2f47;border-top-color:#d9a8ff;animation:spin .8s linear infinite}
+@media(prefers-reduced-motion:reduce){.notice.busy::before,.loading::before{animation-duration:2.4s}}
 .notice{margin:0 0 14px;padding:11px 14px;background:#262031;border:1px solid #433451;border-radius:11px;color:#d8c0e7;font-size:13px;line-height:1.6}
 .headtools{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .toggle{display:inline-flex;align-items:center;gap:8px;border:1px solid #42394d;background:#1b1822;color:#e6dcf3;border-radius:10px;padding:6px 10px;font-size:13px}
@@ -145,20 +151,20 @@ input[type=file]{display:none}
 <aside class="sidebar" id="leftbar" aria-label="Navigation">
   <div class="brand"><div class="brand-icon">◎</div>instakram</div>
   <div class="stats" aria-label="Kennzahlen">
-    <div><b id="s-all">0</b>Links</div><div><b id="s-reels">0</b>Reels</div>
-    <div><b id="s-chats">0</b>Chats</div><div><b id="s-saved">0</b>Gespeichert</div>
+    <div><b id="s-all">–</b>Links</div><div><b id="s-reels">–</b>Reels</div>
+    <div><b id="s-chats">–</b>Chats</div><div><b id="s-saved">–</b>Gespeichert</div>
   </div>
   <nav class="nav" id="navigation">
-    <div class="navrow"><span class="caret spacer">▸</span><button class="navbtn active" data-area="all">✦ &nbsp;Übersicht <span id="count-all">0</span></button></div>
-    <div class="navrow"><span class="caret spacer">▸</span><button class="navbtn" data-area="inbox">✉ &nbsp;Posteingang <span id="count-inbox">0</span></button></div>
-    <div class="navrow"><button class="caret" data-tree="chat" aria-expanded="false" aria-label="Chats aufklappen">▸</button><button class="navbtn" data-area="chat">◍ &nbsp;Chats <span id="count-chat">0</span></button></div>
+    <div class="navrow"><span class="caret spacer">▸</span><button class="navbtn active" data-area="all">✦ &nbsp;Übersicht <span id="count-all">–</span></button></div>
+    <div class="navrow"><span class="caret spacer">▸</span><button class="navbtn" data-area="inbox">✉ &nbsp;Posteingang <span id="count-inbox">–</span></button></div>
+    <div class="navrow"><button class="caret" data-tree="chat" aria-expanded="false" aria-label="Chats aufklappen">▸</button><button class="navbtn" data-area="chat">◍ &nbsp;Chats <span id="count-chat">–</span></button></div>
     <div class="navchildren" id="tree-chat" hidden></div>
-    <div class="navrow"><span class="caret spacer">▸</span><button class="navbtn" data-area="saved">▧ &nbsp;Gespeichert <span id="count-saved">0</span></button></div>
-    <div class="navrow"><span class="caret spacer">▸</span><button class="navbtn" data-area="archive">▤ &nbsp;Archiv <span id="count-archive">0</span></button></div>
-    <div class="navrow"><span class="caret spacer">▸</span><button class="navbtn" data-area="other">◇ &nbsp;Weitere <span id="count-other">0</span></button></div>
-    <div class="navrow"><button class="caret" data-tree="tags" aria-expanded="false" aria-label="Hashtags und Wörter aufklappen">▸</button><button class="navbtn" data-area="tags"># &nbsp;Hashtags &amp; Wörter <span id="count-tags">0</span></button></div>
+    <div class="navrow"><span class="caret spacer">▸</span><button class="navbtn" data-area="saved">▧ &nbsp;Gespeichert <span id="count-saved">–</span></button></div>
+    <div class="navrow"><span class="caret spacer">▸</span><button class="navbtn" data-area="archive">▤ &nbsp;Archiv <span id="count-archive">–</span></button></div>
+    <div class="navrow"><span class="caret spacer">▸</span><button class="navbtn" data-area="other">◇ &nbsp;Weitere <span id="count-other">–</span></button></div>
+    <div class="navrow"><button class="caret" data-tree="tags" aria-expanded="false" aria-label="Hashtags und Wörter aufklappen">▸</button><button class="navbtn" data-area="tags"># &nbsp;Hashtags &amp; Wörter <span id="count-tags">–</span></button></div>
     <div class="navchildren" id="tree-tags" hidden></div>
-    <div class="navrow"><button class="caret" data-tree="topics" aria-expanded="false" aria-label="Themencluster aufklappen">▸</button><button class="navbtn" data-area="topics">◈ &nbsp;Themencluster <span id="count-topics">0</span></button></div>
+    <div class="navrow"><button class="caret" data-tree="topics" aria-expanded="false" aria-label="Themencluster aufklappen">▸</button><button class="navbtn" data-area="topics">◈ &nbsp;Themencluster <span id="count-topics">–</span></button></div>
     <div class="navchildren" id="tree-topics" hidden></div>
     <div class="navrow"><span class="caret spacer">▸</span><button class="navbtn" data-area="import">⇪ &nbsp;Import</button></div>
   </nav>
@@ -174,7 +180,7 @@ input[type=file]{display:none}
   </div>
   <div class="notice" id="status" role="status" hidden></div>
   <div id="results" hidden>
-    <div class="headline"><h2 class="sectiontitle"><span id="sectiontitle">Deine Link-Bibliothek</span><span class="meta" id="filtercount">0 Ergebnisse</span></h2>
+    <div class="headline"><h2 class="sectiontitle"><span id="sectiontitle">Deine Link-Bibliothek</span><span class="meta" id="filtercount"></span></h2>
       <div class="headtools"><button id="consent" class="toggle" role="switch" aria-checked="false" title="Instagram-Vorschauen laden Inhalte direkt von Instagram (nur nach Zustimmung)."><span class="toggle-label">Instagram-Vorschau</span><span class="toggle-track" aria-hidden="true"><span class="toggle-knob"></span></span><span class="toggle-state">Aus</span></button>
       <div class="switch"><button id="gridbutton" class="active" aria-pressed="true">Kacheln</button><button id="listbutton" aria-pressed="false">Liste</button></div></div></div>
     <div class="filterbar" id="filterbar"></div>
@@ -234,7 +240,7 @@ const store={get(k,d){try{const v=localStorage.getItem('instakram.'+k);return v=
 const treeState=store.get('tree',{open:{},sort:{chat:'count',tags:'count',topics:'count'},groups:{}});
 const treeQuery={chat:'',tags:'',topics:''};
 const safeInstagramUrl=it=>{try{const p=new URL(it.url);return p.protocol==='https:'&&['instagram.com','www.instagram.com','m.instagram.com'].includes(p.hostname)&&/^\/(reel|p)\/[A-Za-z0-9_-]+\/?$/.test(p.pathname)?'https://www.instagram.com'+p.pathname:null}catch{return null}};
-function setStatus(message,error=false){$('status').textContent=message;$('status').hidden=!message;$('status').style.borderColor=error?'#a45471':'#433451'}
+function setStatus(message,error=false,busy=false){$('status').textContent=message;$('status').hidden=!message;$('status').classList.toggle('busy',busy&&!error);$('status').setAttribute('aria-busy',String(busy&&!error));$('status').style.borderColor=error?'#a45471':'#433451'}
 function folderIds(){if(!selectedFolder)return [];const base=folders.find(x=>x.id===selectedFolder)?.path||'NOT_FOUND';return folders.filter(f=>f.id===selectedFolder||f.path.startsWith(base+'/')).map(f=>f.id)}
 function activeItems(){const ids=folderIds();const q=$('search').value.trim().toLowerCase(),chat=$('chats').value,kind=$('kind').value;return items.filter(r=>(area==='all'||area==='tags'||area==='topics'||area==='import'||(area==='inbox'?r.review_status==='pending':(r.areas||[r.area]).includes(area)))&&(!chat||(r.chats||[r.chat]).includes(chat))&&(!kind||r.kind===kind)&&(!selectedFolder||r.folders?.some(id=>ids.includes(id)))&&(!selectedTopic||selectedTopic.link_ids.includes(r.id))&&(!termFilter||(r[termFilter.type]||[]).includes(termFilter.term))&&(!q||[r.url,r.chat,(chatInfo[r.chat]||{}).title,r.sender,r.source,r.date,...(r.creators||[]),...(r.captions||[])].some(x=>(x||'').toLowerCase().includes(q))))}
 function make(tag,cls,text){const el=document.createElement(tag);if(cls)el.className=cls;if(text!==undefined)el.textContent=text;return el}
@@ -339,7 +345,7 @@ function counts(){
 }
 
 /* ---------- data ---------- */
-async function importFile(file){if(!file)return;if(!/\.(json|zip)$/i.test(file.name)){setStatus('Bitte eine ZIP- oder JSON-Datei auswählen.',true);return}if(file.size>800*1024*1024){setStatus('Die Datei überschreitet 800 MB.',true);return}const version=++loadVersion;setStatus('Datei wird lokal verarbeitet …');$('choose').disabled=true;try{const response=await fetch('/api/import',{method:'POST',headers:{'Content-Type':'application/octet-stream','X-Filename':file.name.replace(/[^\w.-]/g,'_')},body:file});const data=await response.json();if(!response.ok)throw Error(data.error||'Import fehlgeschlagen');if(version!==loadVersion)return;$('search').value='';$('kind').value='';$('chats').value='';termFilter=null;selectedTopic=null;preview=false;setPreview(false);setArea('all');applyState(data);setStatus(fmt(items.length)+' Links in der Bibliothek · '+data.jsonFiles+' JSON-Dateien gelesen'+(data.errors?' · '+data.errors+' Dateien übersprungen':'')+'.')}catch(error){setStatus(error.message||'Import fehlgeschlagen',true)}finally{$('choose').disabled=false}}
+async function importFile(file){if(!file)return;if(!/\.(json|zip)$/i.test(file.name)){setStatus('Bitte eine ZIP- oder JSON-Datei auswählen.',true);return}if(file.size>800*1024*1024){setStatus('Die Datei überschreitet 800 MB.',true);return}const version=++loadVersion;setStatus('Datei wird lokal verarbeitet …',false,true);$('choose').disabled=true;try{const response=await fetch('/api/import',{method:'POST',headers:{'Content-Type':'application/octet-stream','X-Filename':file.name.replace(/[^\w.-]/g,'_')},body:file});const data=await response.json();if(!response.ok)throw Error(data.error||'Import fehlgeschlagen');if(version!==loadVersion)return;$('search').value='';$('kind').value='';$('chats').value='';termFilter=null;selectedTopic=null;preview=false;setPreview(false);setArea('all');applyState(data);setStatus(fmt(items.length)+' Links in der Bibliothek · '+data.jsonFiles+' JSON-Dateien gelesen'+(data.errors?' · '+data.errors+' Dateien übersprungen':'')+'.')}catch(error){setStatus(error.message||'Import fehlgeschlagen',true)}finally{$('choose').disabled=false}}
 async function api(route,data){const response=await fetch('/api/'+route,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const body=await response.json();if(!response.ok)throw Error(body.error||'Aktion fehlgeschlagen');applyState(body);return body}
 function applyState(data){items=data.items||[];if(data.textIndex)textIndex=data.textIndex;folders=data.folders||[];rules=data.rules||[];settings=data.settings||settings;if(data.chats)chatInfo=Object.fromEntries(data.chats.map(c=>[c.chat,c]));$('autoenabled').checked=!!settings.auto_enabled;$('autothreshold').value=String(settings.threshold);if(termFilter&&!(textIndex[termFilter.type]||[]).some(e=>e.term===termFilter.term))termFilter=null;renderFolders();renderRules();counts();refreshTopics();if(selectedLink){selectedLink=items.find(x=>x.id===selectedLink.id)||null;renderSelection()}}
 function groupOptions(select,includeRoot=false){select.replaceChildren();if(includeRoot)select.add(new Option('Hauptebene',''));for(const f of folders)select.add(new Option(f.path,String(f.id)))}
@@ -383,7 +389,7 @@ $('togglefilters').onclick=()=>toggleRight(!$('rightbar').classList.contains('op
 const panels=store.get('panels',{});document.querySelectorAll('details.panel').forEach(d=>{if(panels[d.dataset.panel]!==undefined)d.open=panels[d.dataset.panel];d.addEventListener('toggle',()=>{panels[d.dataset.panel]=d.open;store.set('panels',panels)})});
 for(const key of ['chat','tags','topics'])openTree(key,!!treeState.open[key]);
 
-async function loadLibrary(){try{const r=await fetch('/api/library');if(!r.ok)throw Error('Datenbank konnte nicht geladen werden');applyState(await r.json());if(!items.length){setArea('import');render()}setStatus(items.length?'':'Bereit für deinen ersten Import.')}catch(e){setStatus(e.message,true)}}
+async function loadLibrary(){const started=performance.now();setStatus('Bibliothek wird geladen …',false,true);$('results').hidden=false;$('content').replaceChildren(make('div','loading','Bibliothek wird aus der lokalen Datenbank geladen …'));try{const r=await fetch('/api/library');if(!r.ok)throw Error('Datenbank konnte nicht geladen werden');applyState(await r.json());if(!items.length){setArea('import');render()}const secs=((performance.now()-started)/1000).toLocaleString('de-DE',{maximumFractionDigits:1});setStatus(items.length?fmt(items.length)+' Links aus der lokalen Datenbank geladen ('+secs+' s).':'Bereit für deinen ersten Import.')}catch(e){$('content').replaceChildren();setStatus(e.message,true)}}
 loadLibrary();
 })();
 </script>
