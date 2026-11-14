@@ -41,8 +41,9 @@ Eine **lokale Instagram-Link-Bibliothek** mit Browseroberfläche. Sammelt URLs a
 - Chat-Absender werden nicht als Creator gewertet; Reel-Permalinks enthalten keine verlässliche Creator-ID, fehlende Angaben werden nicht erraten.
 - Lernen funktioniert nur für Profil-URLs und spezifische externe Domains, nicht anhand von Reel-IDs oder Absendern. Der Wert 80/95 ist ein **heuristischer Signalwert, keine kalibrierte Wahrscheinlichkeit**.
 - Stichwörter, Cluster und KI-Vorschläge sind heuristisch, keine semantische Videoanalyse; unpassende Begriffe sind möglich. Ohne Reel-Inhalt ist jede Erkennung unvollständig. Höchstens 80 Cluster werden angezeigt.
+- Große Bibliotheken sind langsam: Jede Aktion lädt die komplette Bibliothek neu. Gemessen mit synthetischen Daten: 100 000 Links ca. 2 s und 55 MB je Aktion, 500 000 Links (z. B. viele Likes) ca. 11 s und 275 MB je Aktion.
 - Vorschau auf 80 Kacheln bzw. 500 Zeilen begrenzt; die CSV enthält alle gefilterten Treffer.
-- Importlimit 200 MB je Datei, JSON-Einzeldateien max. 80 MB.
+- Importlimit 800 MB je Datei, JSON-Einzeldateien max. 150 MB (größere werden übersprungen und als übersprungen gemeldet), alle JSON-Dateien eines ZIP zusammen max. 500 MB (Fotos/Videos im ZIP zählen dafür nicht). Die Datei wird beim Import vollständig in den Arbeitsspeicher geladen; bei 800 MB also entsprechend RAM einplanen.
 - Die App kann nichts auf Instagram löschen, entspeichern oder verändern.
 - Neue Datenfelder (z. B. Beschreibungen) erscheinen für bereits importierte Links erst nach einem **erneuten Import** desselben Exports; Links werden über ihre URL wiedererkannt, Zuordnungen bleiben erhalten. Schemaänderungen laufen beim Start automatisch – vorher eine Kopie der SQLite-Datei anlegen.
 
