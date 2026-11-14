@@ -13,6 +13,27 @@ MAX_JSON_BYTES = 80 * 1024 * 1024
 MAX_TOTAL_UNCOMPRESSED = 500 * 1024 * 1024
 MAX_ENTRIES = 15000
 
+def fix_mojibake(text):
+    """Repair Instagram's UTF-8-as-Latin-1 escaping ("JÃ¼rgen" -> "Jürgen").
+
+    Strings that are not such mojibake (plain ASCII, real "Café", emojis)
+    fail the round trip and are returned unchanged.
+    """
+    try:
+        return text.encode("latin-1").decode("utf-8")
+    except UnicodeError:
+        return text
+
+def fix_document(node):
+    """Apply fix_mojibake to every string (values and keys) of a parsed JSON document."""
+    if isinstance(node, str):
+        return fix_mojibake(node)
+    if isinstance(node, list):
+        return [fix_document(v) for v in node]
+    if isinstance(node, dict):
+        return {fix_mojibake(k): fix_document(v) for k, v in node.items()}
+    return node
+
 def url_normalize(raw):
     raw = raw.replace("\\/", "/").replace("\\u0026", "&").rstrip(".,;:!?)]}")
     try:
@@ -149,7 +170,7 @@ def process_bytes(data, name):
     results = []
     for filename, content in files:
         try:
-            results.extend(collect(json.loads(content.decode("utf-8-sig")), filename))
+            results.extend(collect(fix_document(json.loads(content.decode("utf-8-sig"))), filename))
         except (UnicodeError, ValueError, RecursionError):
             errors += 1
     # Remove exact duplicates while preserving distinct occurrences/metadata.
