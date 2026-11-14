@@ -9,13 +9,14 @@ Eine **lokale Instagram-Link-Bibliothek** mit Browseroberfläche. Sammelt URLs a
 1. Python 3 installieren (keine weiteren Pakete nötig), Repository klonen.
 2. Im Repository-Ordner starten: `python server.py` (unter macOS/Linux ggf. `python3`).
 3. Der Browser öffnet **http://127.0.0.1:8765** (sonst manuell öffnen).
-4. Instagram-Datenexport als **ZIP oder JSON** per Drag-and-drop importieren.
+4. Auf der Seite **Import** (in der linken Navigation; bei leerer Bibliothek automatisch geöffnet) den Instagram-Datenexport als **ZIP oder JSON** per Drag-and-drop oder „Datei auswählen“ importieren.
 
 **Export anfordern:** Instagram → Kontenübersicht → Deine Informationen und Berechtigungen → Informationen exportieren. Format **JSON**, gesamter Zeitraum, gewünschte Kategorien.
 
 ## Funktionen
 
 - **Bibliothek:** Kachel- und Listenansicht; Suche nach Link, Chatname, Absender, Creator, Beschreibung und Dateiname; Filter nach Chat (mit Chat-/Gruppenname und Linkanzahl), gespeichert, Archiv und Inhaltstyp (Reel, Post, Story, sonstige URL); Excel-kompatibler CSV-Export aller gefilterten Treffer.
+- **Chats:** Übersicht aller Chats mit Links als Kacheln (Chat- bzw. Gruppenname, 👥 mit Teilnehmerzahl, Anzahl Links, Suche); ein Klick zeigt nur die Links dieses Chats.
 - **Kodierungskorrektur:** Instagram-Exporte speichern Umlaute/Emojis fehlerhaft kodiert (z. B. „JÃ¼rgen“). Absender, Beschreibungen, Hashtags und Creator werden beim Import zu „Jürgen“ repariert; bestehende Datenbanken einmalig beim Start (ohne Duplikate, Zuordnungen bleiben erhalten).
 - **Ordner & Gruppen:** Eigene Ordner und Unterordner (anlegen, umbenennen, löschen), Mehrfachzuordnung je Link. Standardgruppen unter `groups/`: Tech & KI, Programmieren, Gaming, Memes & Humor, Musik, Wissen & Bildung, Favoriten, Fitness & Sport, Design & Kunst, Lifestyle, Inspiration, Rezepte, Anime, Filme und Serien.
 - **Regeln:** Gruppe + Feld (URL, Absender, Chat, Typ, Bereich, Quelldatei, Beschreibung/Hashtag) + Suchbegriff; gilt auch für bereits importierte Links. Beim Entfernen einer Regel bleiben vorhandene Zuordnungen bestehen.

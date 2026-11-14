@@ -49,6 +49,6 @@
   Älteres Format (`title` + `string_map_data`/`string_list_data`) für Gespeichert/Likes ebenfalls.
 
 ## UI-001 – Oberfläche überarbeiten
-- Status: Offen, Entwurf kommt vom Nutzer. Gewünscht: Import auf eigener Seite,
-  „Kopieren“ entfernen, Quellen- und Chat-Navigation, Sortierung nach Relevanz,
+- Status: Teilweise umgesetzt: Import auf eigener Seite, „Kopieren“ entfernt,
+  Chat-Übersicht. Offen: Quellen-Navigation, Sortierung nach Relevanz,
   „Gruppen“-Zuordnung direkt am Link, Markierung „nicht mehr verfügbar“.
