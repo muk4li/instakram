@@ -8,7 +8,7 @@ from urllib.parse import urlsplit, urlunsplit
 
 URL_PATTERN = re.compile(r'https?://[^\s<>"\'\\]+', re.IGNORECASE)
 INSTAGRAM_HOSTS = {"instagram.com", "www.instagram.com", "m.instagram.com", "instagr.am", "www.instagr.am"}
-MAX_ARCHIVE_BYTES = 200 * 1024 * 1024
+MAX_ARCHIVE_BYTES = 800 * 1024 * 1024
 MAX_JSON_BYTES = 80 * 1024 * 1024
 MAX_TOTAL_UNCOMPRESSED = 500 * 1024 * 1024
 MAX_ENTRIES = 15000
@@ -142,7 +142,7 @@ def collect(doc, source):
 
 def process_bytes(data, name):
     if len(data) > MAX_ARCHIVE_BYTES:
-        raise ValueError("Datei zu groß (maximal 200 MB).")
+        raise ValueError(f"Datei zu groß (maximal {MAX_ARCHIVE_BYTES // (1024 * 1024)} MB).")
     files = []
     errors = 0
     if name.lower().endswith(".json"):

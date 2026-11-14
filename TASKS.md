@@ -23,3 +23,7 @@
 ## E2E-001 – End-to-End-Test mit echtem Export
 - Status: Offen. Nur lokal durch den Nutzer; Daten und Ergebnisse nicht
   committen, nur anonymisierte Befunde zurückmelden.
+
+## IMP-002 – Importlimit auf 800 MB erhöhen
+- Status: In Review. Nutzer-Export ist 550 MB. Limit in Parser und Web-UI,
+  Konsistenztest; synthetischer 600-MB-Upload über HTTP lokal geprüft.
