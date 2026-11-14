@@ -85,7 +85,23 @@ def format_time(value):
         return value
     return ""
 
-CAPTION_KEYS = ("caption", "description", "alt_text", "accessibility_caption")
+# share_text: caption of a post/reel shared in a chat (Instagram message export).
+CAPTION_KEYS = ("caption", "description", "alt_text", "accessibility_caption", "share_text")
+# original_content_owner: account that posted the shared reel/post.
+CREATOR_KEYS = ("creator_username", "owner_username", "media_owner_username", "original_content_owner")
+
+# Fine-grained origin derived from the export path (first match wins).
+SOURCE_TYPES = (
+    ("/message_requests/", "message_request"), ("/inbox/", "chat"), ("/messages/", "chat"),
+    ("/saved/", "saved"), ("liked_posts", "liked"), ("/likes/", "liked_other"),
+    ("/story_interactions/", "story_interaction"), ("/comments/", "comment"),
+    ("/followers_and_following/", "connection"), ("/link_history/", "link_history"),
+    ("/ads_information/", "ads"), ("/your_instagram_activity/media/", "own_media"),
+)
+
+def source_type(filename):
+    s = "/" + str(filename).lower().replace("\\", "/")
+    return next((name for marker, name in SOURCE_TYPES if marker in s), "other")
 def caption_string(value):
     if isinstance(value, str):
         return value[:5000]
@@ -96,11 +112,19 @@ def caption_string(value):
                 return value[key][:5000]
     return ""
 
+def chat_meta(doc):
+    """Chat name and participant count from a message file (empty if not a chat file)."""
+    if not isinstance(doc, dict) or not isinstance(doc.get("participants"), list):
+        return "", 0
+    title = doc.get("title") if isinstance(doc.get("title"), str) else ""
+    return title.strip()[:200], len(doc["participants"])
+
 def collect(doc, source):
     category = categorise(source)
     chat = conversation(source)
+    chat_title, participants = chat_meta(doc) if chat else ("", 0)
     results = []
-    def walk(node, sender="", date="", caption="", creator=""):
+    def walk(node, sender="", date="", caption="", creator="", reactions=0):
         if isinstance(node, dict):
             for k in ("sender_name", "sender", "username", "author"):
                 if isinstance(node.get(k), str):
@@ -110,7 +134,9 @@ def collect(doc, source):
                 if k in node:
                     date = format_time(node[k]) or date
                     break
-            for key in ("creator_username", "owner_username", "media_owner_username"):
+            if isinstance(node.get("reactions"), list):
+                reactions = len(node["reactions"])
+            for key in CREATOR_KEYS:
                 val = node.get(key)
                 if isinstance(val, str) and 1 <= len(val.strip()) <= 100:
                     creator = val.strip().lstrip("@")
@@ -124,19 +150,21 @@ def collect(doc, source):
                 if key in CAPTION_KEYS:
                     # A caption can itself contain a URL.
                     if isinstance(value, str):
-                        walk(value, sender, date, caption, creator)
+                        walk(value, sender, date, caption, creator, reactions)
                     continue
-                walk(value, sender, date, caption, creator)
+                walk(value, sender, date, caption, creator, reactions)
         elif isinstance(node, list):
             for value in node:
-                walk(value, sender, date, caption, creator)
+                walk(value, sender, date, caption, creator, reactions)
         elif isinstance(node, str):
             for match in URL_PATTERN.findall(node):
                 url = url_normalize(match)
                 if url:
                     results.append({"area": category, "chat": chat, "sender": sender,
                                     "date": date, "kind": classify(url), "url": url,
-                                    "source": source, "caption": caption, "creator": creator})
+                                    "source": source, "caption": caption, "creator": creator,
+                                    "chat_title": chat_title, "participants": participants,
+                                    "reactions": reactions})
     walk(doc)
     return results
 

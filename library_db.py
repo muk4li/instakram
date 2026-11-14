@@ -5,7 +5,7 @@ import re
 import sqlite3
 from collections import defaultdict
 from text_analysis import hashtags, keywords
-from parser_core import fix_mojibake
+from parser_core import fix_mojibake, source_type
 from urllib.parse import urlsplit
 from pathlib import Path
 
@@ -88,10 +88,17 @@ class Library:
         CREATE TABLE IF NOT EXISTS preferences (
             key TEXT PRIMARY KEY, value TEXT NOT NULL
         );
+        CREATE TABLE IF NOT EXISTS chats (
+            chat TEXT PRIMARY KEY, title TEXT NOT NULL DEFAULT '',
+            participants INTEGER NOT NULL DEFAULT 0
+        );
         INSERT OR IGNORE INTO preferences(key,value) VALUES ('auto_enabled','1');
         INSERT OR IGNORE INTO preferences(key,value) VALUES ('threshold','95');
         """)
         with self.conn:
+            columns = {r[1] for r in self.conn.execute("PRAGMA table_info(occurrences)")}
+            if "reactions" not in columns:
+                self.conn.execute("ALTER TABLE occurrences ADD COLUMN reactions INTEGER NOT NULL DEFAULT 0")
             root = self._create_folder("groups")
             for category in DEFAULT_CATEGORIES:
                 self._create_folder(category, root)
@@ -206,8 +213,17 @@ class Library:
                 clean = {k: str(row.get(k) or "") for k in FIELDS}
                 uid = self._link_id(clean["url"])
                 self.conn.execute("INSERT OR IGNORE INTO links(id,url,area,chat,sender,date,kind,source) VALUES(?,?,?,?,?,?,?,?)", (uid,*(clean[k] for k in FIELDS)))
-                self.conn.execute("INSERT OR IGNORE INTO occurrences(link_id,area,chat,sender,date,kind,source) VALUES(?,?,?,?,?,?,?)",
-                                  (uid,*(clean[k] for k in FIELDS if k != "url")))
+                reactions = row.get("reactions") if isinstance(row.get("reactions"), int) else 0
+                self.conn.execute("""INSERT INTO occurrences(link_id,area,chat,sender,date,kind,source,reactions)
+                    VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(link_id,area,chat,sender,date,source)
+                    DO UPDATE SET reactions=MAX(reactions, excluded.reactions)""",
+                                  (uid,*(clean[k] for k in FIELDS if k != "url"),max(0,reactions)))
+                if clean["chat"] and isinstance(row.get("chat_title"), str) and row["chat_title"].strip():
+                    participants = row.get("participants") if isinstance(row.get("participants"), int) else 0
+                    self.conn.execute("""INSERT INTO chats(chat,title,participants) VALUES(?,?,?)
+                        ON CONFLICT(chat) DO UPDATE SET title=excluded.title,
+                        participants=MAX(participants, excluded.participants)""",
+                                      (clean["chat"], row["chat_title"].strip()[:200], participants))
                 creator = row.get("creator")
                 if isinstance(creator, str) and creator.strip():
                     self.conn.execute("INSERT OR IGNORE INTO creators(link_id,creator,source) VALUES(?,?,?)",
@@ -225,8 +241,18 @@ class Library:
         for r in self.conn.execute("SELECT * FROM links ORDER BY date DESC, id"):
             link = dict(r)
             link["occurrences"] = [dict(o) for o in self.conn.execute(
-                "SELECT area,chat,sender,date,kind,source FROM occurrences WHERE link_id=? ORDER BY date DESC",
+                "SELECT area,chat,sender,date,kind,source,reactions FROM occurrences WHERE link_id=? ORDER BY date DESC",
                 (link["id"],))]
+            sources = [source_type(o["source"]) for o in link["occurrences"]]
+            link["sources"] = sorted(set(sources))
+            # Relevance signals across sources: shared in chats, saved, liked, reactions.
+            link["signals"] = {
+                "shares": sum(1 for t in sources if t in ("chat", "message_request")),
+                "saved": "saved" in sources, "liked": "liked" in sources,
+                "reactions": sum(o["reactions"] for o in link["occurrences"]),
+            }
+            link["score"] = (link["signals"]["shares"] + 2 * link["signals"]["saved"]
+                             + link["signals"]["liked"] + link["signals"]["reactions"])
             link["areas"] = sorted({o["area"] for o in link["occurrences"]})
             link["chats"] = sorted({o["chat"] for o in link["occurrences"] if o["chat"]})
             review = self.conn.execute("SELECT status FROM reviews WHERE link_id=?", (link["id"],)).fetchone()
@@ -241,6 +267,15 @@ class Library:
             link["suggestions"] = [dict(s) for s in self.conn.execute("SELECT folder_id,reason,method FROM suggestions WHERE link_id=? ORDER BY folder_id",(link["id"],))]
             links.append(link)
         return links
+
+    def chats(self):
+        """Chats with display name, group flag and number of distinct links."""
+        rows = self.conn.execute("""
+            SELECT o.chat, COALESCE(c.title,'') AS title, COALESCE(c.participants,0) AS participants,
+                   COUNT(DISTINCT o.link_id) AS links
+            FROM occurrences o LEFT JOIN chats c ON c.chat=o.chat
+            WHERE o.chat!='' GROUP BY o.chat ORDER BY links DESC, o.chat""")
+        return [{**dict(r), "is_group": r["participants"] > 2} for r in rows]
 
     def text_index(self):
         """Document-frequency: each unique link contributes at most one count per term."""
@@ -379,6 +414,14 @@ class Library:
             return "domain:" + clean_host
         return None
 
+    def _identities(self):
+        """Learning identity per link: explicit exported creator first, else URL-based."""
+        explicit = {}
+        for row in self.conn.execute("SELECT link_id, MIN(LOWER(creator)) AS creator FROM creators GROUP BY link_id"):
+            explicit[row["link_id"]] = "creator:" + row["creator"].lstrip("@").casefold()
+        return {r["id"]: explicit.get(r["id"]) or self._identity(r["url"])
+                for r in self.conn.execute("SELECT id,url FROM links")}
+
     def _learning_evidence(self, link_id, folder_id):
         target = self.conn.execute("SELECT url FROM links WHERE id=?", (link_id,)).fetchone()
         identity = self._identity(target["url"]) if target else None
@@ -410,9 +453,10 @@ class Library:
             SELECT f.link_id, f.folder_id, f.accepted, l.url
             FROM feedback f JOIN links l ON l.id=f.link_id
         """))
+        identities = self._identities()
         counts = {}
         for f in feedback:
-            identity = self._identity(f["url"])
+            identity = identities.get(f["link_id"])
             if identity:
                 key = (identity, f["folder_id"])
                 item = counts.setdefault(key, {"yes":set(),"no":set()})
@@ -424,7 +468,7 @@ class Library:
         self.conn.execute("DELETE FROM suggestions WHERE method='learned'")
         for row in rows:
             uid = row["id"]
-            identity = self._identity(row["url"])
+            identity = identities.get(uid)
             if uid in resolved or not identity:
                 continue
             for fid in folders:
