@@ -50,5 +50,7 @@
 
 ## UI-001 – Oberfläche überarbeiten
 - Status: Teilweise umgesetzt: Import auf eigener Seite, „Kopieren“ entfernt,
-  Chat-Übersicht. Offen: Quellen-Navigation, Sortierung nach Relevanz,
+  dreispaltiges Layout (linke Navigation mit Bäumen für Chats/Hashtags/Cluster,
+  rechte aufklappbare Filter-/Ordnerleiste, Kennzahlen in der Navigation).
+  Offen: Quellen-Navigation, Sortierung nach Relevanz,
   „Gruppen“-Zuordnung direkt am Link, Markierung „nicht mehr verfügbar“.
