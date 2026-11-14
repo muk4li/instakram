@@ -43,9 +43,10 @@
   Hashtag-Ansicht nach Import/Neuladen leer blieb. Erfordert einmaligen Reimport.
 
 ## META-002 – Gespeichert/Likes im `label_values`-Format
-- Status: Offen, wartet auf maskierte Strukturprobe des Nutzers.
-- Labels (deutscher Export): Name, URL, Titel, Untertitel, Benutzername. Creator und ggf.
-  Caption auslesen; Profil-URL des Eigentümers nicht als eigenen Link importieren.
+- Status: In Review (zusammen mit META-001). Struktur aus maskierter Probe des Nutzers:
+  oberste `URL` = Beitrag, `Untertitel` = Caption, `Benutzername` im Eigentümer-Block = Creator.
+  Die URL im Eigentümer-Block (z. B. Website) wird nicht mehr als eigener Link importiert.
+  Älteres Format (`title` + `string_map_data`/`string_list_data`) für Gespeichert/Likes ebenfalls.
 
 ## UI-001 – Oberfläche überarbeiten
 - Status: Offen, Entwurf kommt vom Nutzer. Gewünscht: Import auf eigener Seite,

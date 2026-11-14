@@ -86,6 +86,59 @@ class ParserMetadataTests(unittest.TestCase):
             self.assertEqual(expected, source_type(path), path)
 
 
+def lv_entry(code, caption, username, ts=1792892876, owner_url="https://linktr.ee/beispiel"):
+    """Structure of the user's saved_posts.json (German labels), synthetic values."""
+    return {"timestamp": ts, "media": [], "fbid": "17800000000000000", "label_values": [
+        {"label": "URL", "value": f"https://www.instagram.com/reel/{code}/",
+         "href": f"https://www.instagram.com/reel/{code}/"},
+        {"label": "Untertitel", "value": broken(caption)},
+        {"label": "Titel", "value": ""},
+        {"dict": [{"dict": [{"label": "Name", "value": "tagname"}], "title": ""}], "title": "Hashtags"},
+        {"dict": [{"dict": [{"label": "URL", "value": owner_url},
+                            {"label": "Name", "value": broken("Bäckerei Beispiel")},
+                            {"label": "Benutzername", "value": username}], "title": ""}],
+         "title": "Inhaber*in des Beitrags"},
+        {"dict": [], "title": "Weitere Infos"},
+    ]}
+
+
+class LabelValuesFormatTests(unittest.TestCase):
+    def test_saved_label_values_entry(self):
+        doc = {"saved_saved_media": [lv_entry("SV1", "Brötchen backen #backen #brot", "baecker.ei")]}
+        items = process_bytes(json.dumps(doc).encode(), "your_instagram_activity/saved/saved_posts.json")["items"]
+        self.assertEqual(1, len(items), "owner profile/website URL must not become a link")
+        item = items[0]
+        self.assertEqual("https://www.instagram.com/reel/SV1", item["url"])
+        self.assertEqual("Brötchen backen #backen #brot", item["caption"])
+        self.assertEqual("baecker.ei", item["creator"])
+        self.assertEqual("saved", item["area"])
+        self.assertTrue(item["date"].startswith("2026-10-"))
+
+    def test_liked_label_values_with_empty_owner_url(self):
+        doc = {"likes_media_likes": [lv_entry("LK1", "Nur Text", "someone", owner_url="")]}
+        item = process_bytes(json.dumps(doc).encode(), "your_instagram_activity/likes/liked_posts.json")["items"][0]
+        self.assertEqual(("someone", "Nur Text"), (item["creator"], item["caption"]))
+        self.assertEqual("liked", source_type(item["source"]))
+
+    def test_english_labels(self):
+        entry = {"timestamp": 1, "label_values": [
+            {"label": "URL", "href": "https://www.instagram.com/p/EN1/"},
+            {"label": "Caption", "value": "Hello #world"},
+            {"dict": [{"dict": [{"label": "Username", "value": "eng.user"}]}], "title": "Owner"}]}
+        item = process_bytes(json.dumps({"x": [entry]}).encode(), "your_instagram_activity/saved/saved_posts.json")["items"][0]
+        self.assertEqual(("eng.user", "Hello #world"), (item["creator"], item["caption"]))
+
+    def test_old_format_title_is_owner_only_for_saved_and_liked(self):
+        liked = {"likes_media_likes": [{"title": "old.owner", "string_list_data": [
+            {"href": "https://www.instagram.com/p/OLD1/", "value": "x", "timestamp": 1700000000}]}]}
+        item = process_bytes(json.dumps(liked).encode(), "your_instagram_activity/likes/liked_posts.json")["items"][0]
+        self.assertEqual("old.owner", item["creator"])
+        comment = {"likes_comment_likes": [{"title": "comment.author", "string_list_data": [
+            {"href": "https://www.instagram.com/p/OLD2/", "value": "x", "timestamp": 1700000000}]}]}
+        item = process_bytes(json.dumps(comment).encode(), "your_instagram_activity/likes/liked_comments.json")["items"][0]
+        self.assertEqual("", item["creator"])
+
+
 class LibraryMetadataTests(unittest.TestCase):
     def setUp(self):
         tmp = tempfile.TemporaryDirectory()
