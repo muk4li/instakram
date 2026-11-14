@@ -4,223 +4,378 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark"><title>instakram · deine Instagram-Links</title>
 <style>
-:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#f5f2ff;background:#0b0b12;font-synthesis:none}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 52% -20%,#392349 0,transparent 43%),#0b0b12}button,input,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}a{color:inherit;text-decoration:none}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #ce8fff;outline-offset:3px}.app{display:grid;grid-template-columns:258px minmax(0,1fr);min-height:100vh}.sidebar{padding:34px 20px;border-right:1px solid #292733;background:#100f18e8;display:flex;flex-direction:column;gap:40px}.brand{display:flex;align-items:center;gap:12px;font-size:23px;font-weight:800;letter-spacing:-1px}.brand-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:14px;background:linear-gradient(135deg,#f07ba2,#9b6cff);font-size:23px}.overline{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:#77738e;padding:0 16px}.nav{display:grid;gap:7px}.nav button{border:0;text-align:left;background:transparent;color:#aaa6bf;border-radius:13px;padding:14px 16px;font-weight:600;display:flex;justify-content:space-between}.nav button:hover{background:#25202f}.nav button.active{color:#fff;background:#32243e}.nav button span{color:#9c90b0}.private{margin-top:auto;border:1px solid #302b3b;border-radius:18px;padding:17px;background:#181620}.private strong{font-size:13px}.private p{color:#9994ad;font-size:12px;line-height:1.65;margin-bottom:0}.main{min-width:0;padding:39px clamp(22px,5vw,80px) 70px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:45px}.eyebrow{letter-spacing:2.5px;text-transform:uppercase;font-size:11px;font-weight:800;color:#b88bea}.topbar .tag{background:#201b29;color:#aca3ba;border:1px solid #342c40;border-radius:99px;padding:10px 16px;font-size:12px}.hero{max-width:780px}.hero h1{font-size:clamp(34px,4.2vw,62px);letter-spacing:-2.4px;line-height:1.08;margin:10px 0 18px}.gradient{background:linear-gradient(100deg,#ff9bca,#bd9aff 70%,#91bfff);color:transparent;background-clip:text}.hero p{font-size:16px;line-height:1.8;color:#aaa6bb;margin:0 0 28px}.import{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:24px 27px;border:1px dashed #72557f;border-radius:23px;background:linear-gradient(120deg,#24192d,#18141e);transition:background .15s}.import.drag{background:#422b54}.import strong{font-size:15px}.import p{font-size:13px;color:#9992aa;margin:6px 0 0}.primary{background:linear-gradient(110deg,#df7eab,#9c77ef);color:#170d25;border:0;border-radius:12px;padding:13px 19px;font-weight:800;white-space:nowrap}.secondary{background:#282330;border:1px solid #42394d;color:#eee9ff;padding:12px 17px;border-radius:12px}.buttonrow{display:flex;gap:9px;flex-wrap:wrap}.hint{color:#888199;font-size:12px;margin:12px 0 34px}.summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:30px 0}.stat{padding:20px;border:1px solid #2d2937;background:#16141e;border-radius:17px}.stat .value{font-size:27px;font-weight:800;letter-spacing:-1px}.stat .caption{font-size:12px;color:#9992ad;margin-top:6px}.sectiontitle{font-size:21px;font-weight:800;letter-spacing:-.6px;margin:32px 0 17px}.toolbar{display:flex;flex-wrap:wrap;gap:11px;margin-bottom:20px}.search{flex:2;min-width:200px}.field{border-radius:11px;border:1px solid #38323f;background:#17151f;color:#f3edff;padding:13px 15px;min-width:150px}.search::placeholder{color:#756f85}.tools{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:17px}.tools .meta{font-size:13px;color:#9992aa}.switch{display:flex;gap:4px;background:#1b1822;border-radius:12px;padding:4px}.switch button{border:0;background:transparent;color:#aaa2b7;padding:9px 15px;border-radius:9px}.switch .active{background:#41314e;color:white}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:16px}.tile{min-width:0;border:1px solid #332c3c;background:#18151e;border-radius:18px;overflow:hidden;display:flex;flex-direction:column}.thumbnail{height:158px;display:flex;align-items:center;justify-content:center;position:relative;background:radial-gradient(circle at 35% 20%,#4c2b5d,transparent 55%),linear-gradient(150deg,#242036,#12121c)}.thumbnail .glyph{font-size:43px;opacity:.7}.kind{position:absolute;left:14px;top:13px;padding:6px 9px;border:1px solid #78617a7a;border-radius:7px;background:#19151acc;font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase}.tile-body{padding:16px;display:grid;gap:11px;flex:1}.tile-body h3{font-size:14px;line-height:1.45;overflow-wrap:anywhere;margin:0}.tile-body .small{font-size:11px;color:#938ca0;overflow-wrap:anywhere}.tile-actions{display:flex;gap:7px;margin-top:auto}.tile-actions a,.tile-actions button{flex:1;border-radius:9px;border:1px solid #4a3d53;background:#2d2435;color:#e8d6fc;text-align:center;padding:10px 6px;font-size:12px;font-weight:700}.tile-actions button{flex:0 0 70px}.embed-slot{padding:13px;border-top:1px solid #332c3c;background:white;min-height:90px;display:flex;justify-content:center;align-items:flex-start}.embed-slot .instagram-media{min-width:0!important;max-width:100%!important;width:100%!important;margin:0!important}.list{display:grid;gap:7px}.listrow{padding:15px;background:#18151e;border:1px solid #302b38;border-radius:13px;display:grid;grid-template-columns:70px minmax(0,1fr) 140px 115px;align-items:center;gap:14px;font-size:12px}.listrow .link{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#dcbcff}.listrow .muted{color:#9690a3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.listrow button{background:#32263c;color:#eee1ff;border:0;border-radius:9px;padding:9px}.empty{border:1px dashed #413549;border-radius:18px;text-align:center;padding:46px 24px;color:#aaa4b8}.empty .symbol{font-size:44px}.empty strong{color:#eae3f4;display:block;margin:10px 0}.notice{margin:15px 0;padding:14px 16px;background:#262031;border:1px solid #433451;border-radius:12px;color:#d8c0e7;font-size:13px;line-height:1.6}.notice[hidden],#results[hidden],#status[hidden],#consent[hidden]{display:none}.footer{color:#777086;font-size:12px;margin-top:34px;line-height:1.8}input[type=file]{display:none}@media(max-width:820px){.app{grid-template-columns:1fr}.sidebar{padding:16px 22px;gap:13px;border-right:0;border-bottom:1px solid #292733}.sidebar .overline,.private{display:none}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap}.main{padding:28px 20px}.topbar{margin-bottom:26px}.summary{grid-template-columns:repeat(2,1fr)}.import{flex-direction:column;align-items:flex-start}.listrow{grid-template-columns:55px minmax(0,1fr) 70px}.listrow .muted{display:none}}@media(max-width:480px){.summary{gap:8px}.stat{padding:14px}.toolbar>*{width:100%}.hero h1{letter-spacing:-1.5px}.topbar .tag{display:none}}
-.organizer{margin:20px 0 30px;padding:22px;border:1px solid #40334d;border-radius:20px;background:#17121d}.organizer-head h2{font-size:21px;margin:0 0 6px}.organizer-head p{margin:0 0 18px;color:#9890aa;font-size:13px}.organizer-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.folder-panel{min-width:0;padding:16px;border:1px solid #342d40;border-radius:15px;background:#1d1725}.foldertree{max-height:250px;overflow:auto;display:grid;gap:3px;margin-bottom:16px}.folderitem{font-size:12px;text-align:left;border:0;color:#cbbad8;background:transparent;border-radius:7px;padding:8px 12px}.folderitem:hover,.folderitem.chosen{background:#493258;color:#fff}.subhead{font-size:12px;font-weight:800;color:#d2c6da;margin:8px 0 10px}.stack{display:grid;gap:8px}.stack .field{min-width:0;width:100%}.tinybutton{border:1px solid #483c52;color:#c7b1d1;background:#2c2335;padding:8px 12px;border-radius:9px;font-size:12px}.folder-panel .buttonrow{margin-top:12px}.linkeditor{max-height:410px;overflow:auto;overflow-wrap:anywhere;font-size:12px}.linkeditor>strong{display:block;color:#d4b4ee;margin:0 0 10px}.selection-list{max-height:230px;overflow:auto}.checkrow{display:flex;align-items:center;gap:9px;padding:6px 0;cursor:pointer}.checkrow input{accent-color:#ae7cdf}.suggestion,.ruleitem{display:flex;align-items:center;gap:8px;justify-content:space-between;border-bottom:1px solid #373040;padding:7px 0;font-size:11px;overflow-wrap:anywhere}.suggestion button,.ruleitem button{border:0;border-radius:8px;background:#49355b;color:#f6eaff;padding:7px 8px;cursor:pointer}.rulelist{max-height:145px;overflow:auto}.organizer .hint{margin:0;line-height:1.5}@media(max-width:1250px){.organizer-grid{grid-template-columns:1fr 1fr}.organizer-grid>.folder-panel:last-child{grid-column:1/-1}}@media(max-width:690px){.organizer-grid{grid-template-columns:1fr}.organizer-grid>.folder-panel:last-child{grid-column:auto}}
-.inbox-controls{margin:16px 0 24px;padding:21px;background:linear-gradient(120deg,#2d1e39,#1a1722);border:1px solid #664776;border-radius:18px}.inbox-controls[hidden]{display:none}.inbox-controls strong{font-size:18px}.inbox-controls p{font-size:13px;color:#b2a4c3;line-height:1.6}.inbox-controls-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.inbox-controls-row label{font-size:12px;color:#e1d4e8}.inbox-controls .hint{margin:12px 0 0}.reviewactions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.reviewactions button{border:1px solid #7a5589;background:#463153;color:#fff;border-radius:9px;padding:10px 12px;font-size:12px;font-weight:700}.reviewactions button:first-child{background:#9363b7;border-color:#9363b7}.inbox-controls select{margin-left:8px}
-.tag-explorer{margin:20px 0 26px;padding:24px;border:1px solid #45324e;border-radius:20px;background:linear-gradient(140deg,#22172b,#17141e)}.tag-explorer[hidden]{display:none}.tagheading{display:flex;justify-content:space-between;gap:12px;align-items:center}.tagheading h2{margin:0;font-size:21px}.tagheading p{font-size:13px;color:#aaa0b7;line-height:1.6}.tagstats{color:#a993c4;font-size:13px;margin:12px 0 20px}.tagstats strong{font-size:20px;color:#eee}.tagcolumns{display:grid;grid-template-columns:1fr 1fr;gap:18px}.tagcolumns h3{font-size:15px}.term-cloud{display:flex;flex-wrap:wrap;gap:8px;max-height:340px;overflow:auto}.term-chip{border:1px solid #4d3c5a;background:#2b2035;border-radius:20px;color:#d4b6e5;padding:8px 12px;font-size:12px}.term-chip:hover,.term-chip.selected{border-color:#d09aff;background:#4a2f5b;color:#fff}@media(max-width:700px){.tagcolumns{grid-template-columns:1fr}.tagheading{flex-direction:column;align-items:flex-start}}
-.caption-preview{font-size:12px;line-height:1.55;color:#a9a0ba;max-height:5em;overflow:hidden;margin:0}.cardtags{display:flex;flex-wrap:wrap;gap:6px}.cardtags button{font-size:10px;background:#30233e;border:1px solid #493457;border-radius:16px;color:#dcb7f1;padding:6px 8px}.cardtags button:hover{background:#493259}
-.topic-explorer{margin:20px 0 28px;padding:24px;background:linear-gradient(125deg,#21182b,#14151e);border:1px solid #4b365b;border-radius:22px}.topic-explorer[hidden],.topic-selection[hidden]{display:none}.topic-header{display:flex;align-items:center;justify-content:space-between;gap:15px}.topic-header h2{margin:0;font-size:22px}.topic-header p{font-size:13px;line-height:1.6;color:#aba0bd}.topic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin:16px 0}.topic-card{text-align:left;display:flex;flex-direction:column;gap:12px;min-height:155px;padding:18px;border:1px solid #50375e;background:#261c32;border-radius:16px;color:#f5e8ff}.topic-card:hover,.topic-card.selected{background:#40294f;border-color:#c896ec}.topic-card strong{font-size:18px;overflow-wrap:anywhere}.topic-type{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#c3a1d8}.topic-count{font-size:12px;color:#aa91bf}.topic-terms{display:flex;gap:5px;flex-wrap:wrap}.topic-terms span{font-size:11px;color:#ccb7d9;padding:5px 8px;border-radius:12px;background:#493355}.topic-selection{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:17px;background:#30223b;border:1px solid #6a4d77;border-radius:14px}.topic-selection strong{font-size:15px}.topic-actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.topic-actions .field{max-width:230px}@media(max-width:750px){.topic-header,.topic-selection{align-items:flex-start;flex-direction:column}}
+:root{--left:236px;--left-open:420px;--right:330px;--line:#292733;--panel:#100f18;--muted:#9994ad;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#f5f2ff;background:#0b0b12;font-synthesis:none}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 52% -20%,#392349 0,transparent 43%),#0b0b12}
+button,input,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}a{color:inherit;text-decoration:none}
+button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid #ce8fff;outline-offset:2px}
+[hidden]{display:none!important}
+.app{display:grid;grid-template-columns:var(--left) minmax(0,1fr) var(--right);min-height:100vh}
+
+/* Left sidebar: compact, widens on hover and overlays the content */
+.sidebar{position:sticky;top:0;height:100vh;width:var(--left);overflow-y:auto;overflow-x:hidden;padding:22px 14px;border-right:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;gap:18px;z-index:20;transition:width .18s ease,box-shadow .18s ease}
+.sidebar:hover{width:var(--left-open);box-shadow:18px 0 40px #0009}
+.brand{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:800;letter-spacing:-.8px;padding:0 6px}
+.brand-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,#f07ba2,#9b6cff);font-size:19px;flex:none}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:2px 10px;padding:0 8px;font-size:11px;color:var(--muted)}
+.stats b{color:#d9cfe6;font-weight:700;margin-right:4px}
+.nav{display:grid;grid-template-columns:minmax(0,1fr);gap:2px}
+.navrow{display:flex;align-items:center;gap:2px}
+.caret{border:0;background:transparent;color:#8d84a3;width:22px;height:30px;border-radius:7px;flex:none;font-size:11px;transition:transform .12s}
+.caret[aria-expanded=true]{transform:rotate(90deg)}.caret.spacer{visibility:hidden}
+.navbtn{flex:1;min-width:0;border:0;text-align:left;background:transparent;color:#aaa6bf;border-radius:10px;padding:9px 10px;font-weight:600;font-size:14px;display:flex;justify-content:space-between;gap:8px;white-space:nowrap}
+.navbtn:hover{background:#25202f}.navbtn.active{color:#fff;background:#32243e}.navbtn span{color:#9c90b0;font-weight:500}
+.navchildren{min-width:0;margin:2px 0 8px 24px;padding-left:8px;border-left:1px solid #2c2838}
+.treetools{display:flex;gap:6px;align-items:center;margin:4px 0 6px}
+.treetools input{flex:1;min-width:0;border-radius:8px;border:1px solid #38323f;background:#17151f;color:#f3edff;padding:6px 8px;font-size:12px}
+.seg{display:flex;background:#1b1822;border-radius:8px;padding:2px;flex:none}
+.seg button{border:0;background:transparent;color:#a39bb3;font-size:11px;padding:4px 7px;border-radius:6px}.seg button.on{background:#41314e;color:#fff}
+.treegroup>summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#c9bcd8;padding:5px 6px;border-radius:7px;font-weight:600}
+.treegroup>summary::-webkit-details-marker{display:none}.treegroup>summary::before{content:'▸';margin-right:6px;color:#8d84a3;display:inline-block;transition:transform .12s}
+.treegroup[open]>summary::before{transform:rotate(90deg)}.treegroup>summary:hover{background:#221d2b}
+.treegroup>summary span:first-child{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.leaves{display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:max-content;gap:1px;margin:2px 0 6px 12px}
+.leaf{border:0;background:transparent;color:#b4abc4;text-align:left;font-size:12px;padding:5px 8px;border-radius:7px;display:flex;justify-content:space-between;gap:8px}
+.leaf span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.leaf span:last-child{color:#7f7793;flex:none}
+.leaf:hover{background:#25202f;color:#fff}.leaf.on{background:#4a2f5b;color:#fff}
+.treehint{font-size:11px;color:#7f7793;padding:4px 8px;line-height:1.5}
+.private{margin-top:auto;font-size:11px;color:#7f7793;line-height:1.6;padding:0 8px}
+
+/* Main */
+.main{min-width:0;padding:26px clamp(18px,3vw,44px) 60px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+.eyebrow{letter-spacing:2.5px;text-transform:uppercase;font-size:11px;font-weight:800;color:#b88bea}
+.topbar .tag{background:#201b29;color:#aca3ba;border:1px solid #342c40;border-radius:99px;padding:7px 13px;font-size:12px}
+.topbar .right{display:flex;gap:8px;align-items:center}
+#togglefilters{display:none}
+.hero{max-width:780px}.hero h1{font-size:clamp(32px,4vw,56px);letter-spacing:-2.2px;line-height:1.08;margin:10px 0 18px}
+.gradient{background:linear-gradient(100deg,#ff9bca,#bd9aff 70%,#91bfff);color:transparent;background-clip:text}
+.hero p{font-size:16px;line-height:1.8;color:#aaa6bb;margin:0 0 28px}
+.import{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:24px 27px;border:1px dashed #72557f;border-radius:23px;background:linear-gradient(120deg,#24192d,#18141e);transition:background .15s}
+.import.drag{background:#422b54}.import strong{font-size:15px}.import p{font-size:13px;color:#9992aa;margin:6px 0 0}
+.primary{background:linear-gradient(110deg,#df7eab,#9c77ef);color:#170d25;border:0;border-radius:11px;padding:11px 16px;font-weight:800;white-space:nowrap}
+.secondary{background:#282330;border:1px solid #42394d;color:#eee9ff;padding:9px 13px;border-radius:10px;font-size:13px}
+.buttonrow{display:flex;gap:8px;flex-wrap:wrap}
+.hint{color:#888199;font-size:12px;line-height:1.55;margin:10px 0}
+.notice{margin:0 0 14px;padding:11px 14px;background:#262031;border:1px solid #433451;border-radius:11px;color:#d8c0e7;font-size:13px;line-height:1.6}
+.headline{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:4px 0 10px}
+.sectiontitle{font-size:21px;font-weight:800;letter-spacing:-.6px;margin:0}
+.meta{font-size:13px;color:#9992aa;margin-left:10px;font-weight:500;letter-spacing:0}
+.switch{display:flex;gap:3px;background:#1b1822;border-radius:10px;padding:3px}
+.switch button{border:0;background:transparent;color:#aaa2b7;padding:7px 12px;border-radius:8px;font-size:13px}.switch .active{background:#41314e;color:white}
+.filterbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 16px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:#2b2035;border:1px solid #4d3c5a;border-radius:99px;color:#e4cff2;font-size:12px;padding:5px 6px 5px 11px}
+.chip button{border:0;background:#4a3858;color:#fff;border-radius:99px;width:20px;height:20px;line-height:1;padding:0}
+.topicaction{display:inline-flex;gap:6px;align-items:center}.topicaction select{max-width:220px}
+.field{border-radius:9px;border:1px solid #38323f;background:#17151f;color:#f3edff;padding:9px 11px;min-width:0;width:100%;font-size:13px}
+.field::placeholder{color:#756f85}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.tile{min-width:0;border:1px solid #332c3c;background:#18151e;border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.thumbnail{height:130px;display:flex;align-items:center;justify-content:center;position:relative;background:radial-gradient(circle at 35% 20%,#4c2b5d,transparent 55%),linear-gradient(150deg,#242036,#12121c)}
+.thumbnail .glyph{font-size:40px;opacity:.7}
+.kind{position:absolute;left:12px;top:11px;padding:5px 8px;border:1px solid #78617a7a;border-radius:7px;background:#19151acc;font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase}
+.tile-body{padding:14px;display:grid;gap:10px;flex:1}
+.tile-body h3{font-size:13px;line-height:1.45;overflow-wrap:anywhere;margin:0}
+.tile-body .small{font-size:11px;color:#938ca0;overflow-wrap:anywhere}
+.caption-preview{font-size:12px;line-height:1.55;color:#a9a0ba;max-height:5em;overflow:hidden;margin:0}
+.cardtags{display:flex;flex-wrap:wrap;gap:5px}.cardtags button{font-size:10px;background:#30233e;border:1px solid #493457;border-radius:16px;color:#dcb7f1;padding:5px 7px}.cardtags button:hover{background:#493259}
+.tile-actions{display:flex;gap:7px;margin-top:auto}
+.tile-actions a,.tile-actions button{flex:1;border-radius:9px;border:1px solid #4a3d53;background:#2d2435;color:#e8d6fc;text-align:center;padding:9px 6px;font-size:12px;font-weight:700}
+.embed-slot{padding:13px;border-top:1px solid #332c3c;background:white;min-height:90px;display:flex;justify-content:center;align-items:flex-start}
+.embed-slot .instagram-media{min-width:0!important;max-width:100%!important;width:100%!important;margin:0!important}
+.list{display:grid;gap:6px}
+.listrow{padding:12px 14px;background:#18151e;border:1px solid #302b38;border-radius:12px;display:grid;grid-template-columns:64px minmax(0,1fr) 160px 92px;align-items:center;gap:12px;font-size:12px}
+.listrow .link{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#dcbcff}
+.listrow .muted{color:#9690a3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.listrow button{background:#32263c;color:#eee1ff;border:0;border-radius:9px;padding:8px}
+.empty{border:1px dashed #413549;border-radius:18px;text-align:center;padding:46px 24px;color:#aaa4b8}.empty .symbol{font-size:44px}.empty strong{color:#eae3f4;display:block;margin:10px 0}
+.footer{color:#777086;font-size:12px;margin-top:34px;line-height:1.8}
+input[type=file]{display:none}
+
+/* Right sidebar: collapsible sections */
+.rightbar{position:sticky;top:0;height:100vh;overflow-y:auto;border-left:1px solid var(--line);background:var(--panel);padding:16px 14px 40px;z-index:15}
+.rightbar .closebar{display:none;justify-content:flex-end;margin-bottom:6px}
+.panel{border:1px solid #2f2a3a;border-radius:13px;background:#15131d;margin-bottom:10px}
+.panel>summary{list-style:none;cursor:pointer;padding:12px 14px;font-size:13px;font-weight:700;color:#e5dcef;display:flex;justify-content:space-between;align-items:center}
+.panel>summary::-webkit-details-marker{display:none}.panel>summary::after{content:'▾';color:#8d84a3;transition:transform .12s}
+.panel:not([open])>summary::after{transform:rotate(-90deg)}
+.panel>.body{padding:0 14px 14px;display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+.subhead{font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#a99cba;margin:8px 0 2px}
+.foldertree{max-height:280px;overflow:auto;display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:max-content;gap:2px}
+.folderitem{font-size:12px;text-align:left;border:0;color:#cbbad8;background:transparent;border-radius:7px;padding:6px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.folderitem:hover,.folderitem.chosen{background:#493258;color:#fff}
+.tinybutton{border:1px solid #483c52;color:#c7b1d1;background:#2c2335;padding:6px 10px;border-radius:8px;font-size:12px}
+.linkeditor{overflow-wrap:anywhere;font-size:12px}.linkeditor>strong{display:block;color:#d4b4ee;margin:0 0 8px}
+.linkeditor h4{font-size:12px;margin:12px 0 4px}
+.selection-list{max-height:240px;overflow:auto}
+.checkrow{display:flex;align-items:center;gap:8px;padding:4px 0;cursor:pointer;font-size:12px;color:#ddd2e8}.checkrow input{accent-color:#ae7cdf}
+.suggestion,.ruleitem{display:flex;align-items:center;gap:8px;justify-content:space-between;border-bottom:1px solid #373040;padding:6px 0;font-size:11px;overflow-wrap:anywhere}
+.suggestion button,.ruleitem button{border:0;border-radius:7px;background:#49355b;color:#f6eaff;padding:6px 8px}
+.rulelist{max-height:160px;overflow:auto}
+.reviewactions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.reviewactions button{border:1px solid #7a5589;background:#463153;color:#fff;border-radius:8px;padding:8px 10px;font-size:12px;font-weight:700}
+.reviewactions button:first-child{background:#9363b7;border-color:#9363b7}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+@media(max-width:1180px){
+  .app{grid-template-columns:var(--left) minmax(0,1fr)}
+  .rightbar{position:fixed;right:0;top:0;bottom:0;width:min(360px,92vw);height:auto;transform:translateX(102%);transition:transform .2s;z-index:40;box-shadow:-18px 0 40px #000a}
+  .rightbar.open{transform:none}.rightbar .closebar{display:flex}
+  #togglefilters{display:inline-block}
+}
+@media(max-width:820px){
+  .app{grid-template-columns:1fr}
+  .sidebar,.sidebar:hover{position:static;height:auto;width:auto;box-shadow:none;border-right:0;border-bottom:1px solid var(--line)}
+  .navchildren{max-height:50vh;overflow:auto}
+  .main{padding:20px 16px}.import{flex-direction:column;align-items:flex-start}
+  .listrow{grid-template-columns:52px minmax(0,1fr) 80px}.listrow .muted{display:none}
+  .topbar .tag{display:none}
+}
 </style>
 </head>
 <body>
 <div class="app">
-<aside class="sidebar">
+<aside class="sidebar" id="leftbar" aria-label="Navigation">
   <div class="brand"><div class="brand-icon">◎</div>instakram</div>
-  <div><div class="overline">Deine Bibliothek</div><nav class="nav" id="navigation">
-    <button data-area="topics">◈ &nbsp; Themencluster <span id="count-topics">0</span></button>
-    <button data-area="tags"># &nbsp; Hashtags & Wörter <span id="count-tags">0</span></button>
-    <button data-area="inbox">✉ &nbsp; Posteingang <span id="count-inbox">0</span></button>
-    <button class="active" data-area="all">✦ &nbsp; Übersicht <span id="count-all">0</span></button>
-    <button data-area="chat">◍ &nbsp; Chats <span id="count-chat">0</span></button>
-    <button data-area="saved">▧ &nbsp; Gespeichert <span id="count-saved">0</span></button>
-    <button data-area="archive">▤ &nbsp; Archiv <span id="count-archive">0</span></button>
-    <button data-area="other">◇ &nbsp; Weitere <span id="count-other">0</span></button>
-    <button data-area="import">⇪ &nbsp; Import</button>
-  </nav></div>
-  <div class="private"><strong>♧ &nbsp; Private by design</strong><p>Dein Export bleibt auf deinem Rechner. Die Verarbeitung erfolgt ausschließlich über deinen lokalen Server. Externe Instagram-Inhalte werden nur mit deiner Zustimmung geladen.</p></div>
+  <div class="stats" aria-label="Kennzahlen">
+    <div><b id="s-all">0</b>Links</div><div><b id="s-reels">0</b>Reels</div>
+    <div><b id="s-chats">0</b>Chats</div><div><b id="s-saved">0</b>Gespeichert</div>
+  </div>
+  <nav class="nav" id="navigation">
+    <div class="navrow"><span class="caret spacer">▸</span><button class="navbtn active" data-area="all">✦ &nbsp;Übersicht <span id="count-all">0</span></button></div>
+    <div class="navrow"><span class="caret spacer">▸</span><button class="navbtn" data-area="inbox">✉ &nbsp;Posteingang <span id="count-inbox">0</span></button></div>
+    <div class="navrow"><button class="caret" data-tree="chat" aria-expanded="false" aria-label="Chats aufklappen">▸</button><button class="navbtn" data-area="chat">◍ &nbsp;Chats <span id="count-chat">0</span></button></div>
+    <div class="navchildren" id="tree-chat" hidden></div>
+    <div class="navrow"><span class="caret spacer">▸</span><button class="navbtn" data-area="saved">▧ &nbsp;Gespeichert <span id="count-saved">0</span></button></div>
+    <div class="navrow"><span class="caret spacer">▸</span><button class="navbtn" data-area="archive">▤ &nbsp;Archiv <span id="count-archive">0</span></button></div>
+    <div class="navrow"><span class="caret spacer">▸</span><button class="navbtn" data-area="other">◇ &nbsp;Weitere <span id="count-other">0</span></button></div>
+    <div class="navrow"><button class="caret" data-tree="tags" aria-expanded="false" aria-label="Hashtags und Wörter aufklappen">▸</button><button class="navbtn" data-area="tags"># &nbsp;Hashtags &amp; Wörter <span id="count-tags">0</span></button></div>
+    <div class="navchildren" id="tree-tags" hidden></div>
+    <div class="navrow"><button class="caret" data-tree="topics" aria-expanded="false" aria-label="Themencluster aufklappen">▸</button><button class="navbtn" data-area="topics">◈ &nbsp;Themencluster <span id="count-topics">0</span></button></div>
+    <div class="navchildren" id="tree-topics" hidden></div>
+    <div class="navrow"><span class="caret spacer">▸</span><button class="navbtn" data-area="import">⇪ &nbsp;Import</button></div>
+  </nav>
+  <div class="private">♧ Private by design: Verarbeitung nur auf deinem Rechner. Instagram-Inhalte werden nur nach Zustimmung geladen.</div>
 </aside>
+
 <main class="main">
-  <div class="topbar"><div class="eyebrow">DEIN PERSÖNLICHES ARCHIV</div><div class="tag">● Lokal · 127.0.0.1</div></div>
+  <div class="topbar"><div class="eyebrow">Dein persönliches Archiv</div><div class="right"><button class="secondary" id="togglefilters" aria-controls="rightbar" aria-expanded="false">⚙ Filter</button><div class="tag">● Lokal · 127.0.0.1</div></div></div>
   <div id="importpage" hidden>
-  <section class="hero"><h1>Deine Links.<br><span class="gradient">Endlich im Überblick.</span></h1><p>Alle auffindbaren Reels, Beiträge und Links aus deinen Instagram-Chats, gespeicherten Inhalten und Archivdaten – in einer schönen, durchsuchbaren Bibliothek.</p></section>
-  <section class="import" id="dropzone"><div><strong>✧ &nbsp; Deinen Instagram-Export importieren</strong><p>ZIP oder JSON hierher ziehen. Deine Daten werden lokal eingelesen und nicht gespeichert.</p></div><div class="buttonrow"><button class="primary" id="choose">↑ &nbsp; Datei auswählen</button></div><input id="file" type="file" accept=".zip,.json,application/zip,application/json"></section>
-  <div class="hint">Tipp: Bei Meta den Export im JSON-Format für den gesamten Zeitraum anfordern. Maximal 800 MB pro Datei.</div>
+    <section class="hero"><h1>Deine Links.<br><span class="gradient">Endlich im Überblick.</span></h1><p>Alle auffindbaren Reels, Beiträge und Links aus deinen Instagram-Chats, gespeicherten Inhalten und Archivdaten – in einer durchsuchbaren Bibliothek.</p></section>
+    <section class="import" id="dropzone"><div><strong>✧ &nbsp; Deinen Instagram-Export importieren</strong><p>ZIP oder JSON hierher ziehen. Die Datei wird lokal eingelesen; gespeichert werden nur die gefundenen Links und Metadaten in deiner lokalen Datenbank.</p></div><div class="buttonrow"><button class="primary" id="choose">↑ &nbsp; Datei auswählen</button></div><input id="file" type="file" accept=".zip,.json,application/zip,application/json"></section>
+    <div class="hint">Tipp: Bei Meta den Export im JSON-Format für den gesamten Zeitraum anfordern. Maximal 800 MB pro Datei. Ein erneuter Import desselben Exports erzeugt keine Duplikate.</div>
   </div>
   <div class="notice" id="status" role="status" hidden></div>
   <div id="results" hidden>
-    <section class="summary">
-      <div class="stat"><div class="value" id="s-all">0</div><div class="caption">Gefundene Links</div></div>
-      <div class="stat"><div class="value" id="s-reels">0</div><div class="caption">Reels</div></div>
-      <div class="stat"><div class="value" id="s-chats">0</div><div class="caption">Chats mit Links</div></div>
-      <div class="stat"><div class="value" id="s-saved">0</div><div class="caption">Gespeichert</div></div>
-    </section>
-    <section class="inbox-controls" id="inboxcontrols" hidden><div><strong>Intelligenter Posteingang</strong><p>Prüfe Vorschläge, korrigiere Kategorien und trainiere damit zukünftige Zuordnungen. Ohne ausreichende Hinweise bleibt der Link unsortiert.</p></div><div class="inbox-controls-row"><label class="checkrow"><input type="checkbox" id="autoenabled"> Eindeutige Treffer automatisch zuordnen</label><label>Schwelle <select id="autothreshold" class="field"><option value="95">95 / 100 (streng)</option><option value="100">100 / 100 (nur Regeln)</option><option value="90">90 / 100</option><option value="85">85 / 100</option><option value="80">80 / 100</option></select></label><button class="secondary" id="savesmart">Einstellungen speichern</button></div><div class="hint">Hinweis: Der Wert ist ein heuristischer Signalwert, keine gemessene Wahrscheinlichkeit. Lernen funktioniert derzeit nur bei identifizierbaren Profil-URLs oder externen Domains; nicht anhand kryptischer Reel-IDs oder Chat-Absender.</div></section><section class="topic-explorer" id="topicexplorer" hidden>
-  <div class="topic-header"><div><h2>✦ Themencluster</h2><p>Entdecke zusammenhängende Themen anhand exportierter Beschreibungen, Hashtags und deiner bisherigen Gruppen. Ein Link kann in mehreren Clustern vorkommen.</p></div><button class="secondary" id="refreshclusters">↻ Aktualisieren</button></div>
-  <div id="topicnotice" class="hint">Noch keine Themen ausgewertet.</div>
-  <div class="topic-grid" id="topicgrid"></div>
-  <div class="topic-selection" id="topicselection" hidden>
-    <div><strong id="topicname">Cluster</strong><div id="topicdetails" class="hint"></div></div>
-    <div class="topic-actions"><select id="topicfolder" class="field" aria-label="Zielordner wählen"></select><button id="topicassign" class="primary">Links zu Gruppe hinzufügen</button><button id="topiclear" class="secondary">Alle Cluster</button></div>
-  </div>
-  <p class="hint">Automatisch ermittelte Cluster sind zunächst nur Ansichten. Eine tatsächliche Gruppenzuordnung erfolgt ausschließlich nach deiner Bestätigung. Ohne Beschreibungen entstehen keine textbasierten Cluster.</p>
-</section>
-<section class="tag-explorer" id="tagexplorer" hidden>
-  <div class="tagheading"><div><h2># Hashtags & Schlüsselwörter</h2><p>Klick auf einen Begriff, um die verknüpften Links zu sehen. Gezählt werden eindeutige Links mit exportierter Beschreibung.</p></div><button class="secondary" id="cleartextfilter">Filter zurücksetzen</button></div>
-  <div class="tagstats"><strong id="captioncoverage">0</strong> Links mit Beschreibung</div>
-  <div class="tagcolumns"><div><h3>Hashtags <span id="hashtagsnum"></span></h3><div class="term-cloud" id="hashtagscloud"></div></div><div><h3>Schlüsselwörter <span id="keywordsnum"></span></h3><div class="term-cloud" id="keywordscloud"></div></div></div>
-  <p class="hint">Wörter werden lokal aus den vorhandenen Beschreibungen extrahiert (keine KI). Es werden keine nicht exportierten Beschreibungen aus Instagram nachgeladen.</p>
-</section>
-<section class="tag-explorer" id="chatexplorer" hidden>
-  <div class="tagheading"><div><h2>◍ Chats</h2><p>Wähle einen Chat, um nur die dort geteilten Links zu sehen. 👥 = Gruppenchat.</p></div><button class="secondary" id="clearchat">Alle Chats</button></div>
-  <input class="field search" id="chatsearch" placeholder="⌕  Chat suchen …" aria-label="Chats durchsuchen" style="width:100%;margin:12px 0 16px">
-  <div class="topic-grid" id="chatgrid"></div>
-</section><h2 class="sectiontitle" id="sectiontitle">Deine Link-Bibliothek</h2>
-    <section id="organizer" class="organizer"><div class="organizer-head"><h2>Ordner &amp; Gruppen</h2><p>Mehrfachzuordnung, Unterordner und dauerhafte Regeln</p></div><div class="organizer-grid"><div class="folder-panel"><div id="foldertree" class="foldertree"></div><div class="subhead">Ordner anlegen</div><div class="stack"><select id="parentfolder" class="field" aria-label="Übergeordneter Ordner"></select><input id="foldername" class="field" placeholder="Neuer Ordnername"><button id="newfolder" class="secondary">+ Ordner erstellen</button></div><div class="buttonrow"><button id="renamefolder" class="tinybutton">Umbenennen</button><button id="deletefolder" class="tinybutton">Löschen</button></div></div><div class="folder-panel"><div class="subhead">Link-Zuordnungen</div><div id="linkeditor" class="linkeditor"></div></div><div class="folder-panel"><div class="subhead">Automatische Regeln</div><div class="stack"><select id="rulefolder" class="field" aria-label="Zielgruppe"></select><select id="rulefield" class="field" aria-label="Regelfeld"><option value="url">Link enthält</option><option value="sender">Absender enthält</option><option value="chat">Chat enthält</option><option value="kind">Typ enthält</option><option value="source">Quelldatei enthält</option><option value="caption">Beschreibung/Hashtag enthält</option><option value="area">Bereich enthält</option></select><input class="field" id="rulepattern" placeholder="Begriff, z. B. python"><button class="secondary" id="addrule">+ Regel hinzufügen</button></div><div id="rulelist" class="rulelist"></div><div class="subhead">Sortierung vorschlagen</div><div class="stack"><button class="secondary" id="localsuggest">✦ Stichwort-Vorschläge</button><input id="aimodel" class="field" value="llama3.2" aria-label="Lokales Ollama-Modell"><button class="secondary" id="aisuggest">✧ Lokale KI: 20 Treffer</button><p class="hint">Optional: Ollama muss lokal laufen. Nur Vorschläge – keine automatischen KI-Zuordnungen.</p></div></div></div></section><div class="toolbar">
-      <input class="field search" id="search" placeholder="⌕  Link, Absender oder Dateiname suchen …" aria-label="Links durchsuchen">
-      <select class="field" id="chats" aria-label="Chat auswählen"><option value="">Alle Chats</option></select>
-      <select class="field" id="kind" aria-label="Inhaltstyp"><option value="">Alle Typen</option><option value="reel">Reels</option><option value="post">Beiträge</option><option value="story">Stories</option><option value="instagram">Instagram-Links</option><option value="external">Andere Links</option></select>
-      <button class="secondary" id="csv">↓ CSV exportieren</button>
-    </div>
-    <div class="tools"><div class="meta" id="filtercount">0 Ergebnisse</div><div class="buttonrow">
-      <button class="secondary" id="consent">◉ Instagram-Vorschau aktivieren</button>
-      <div class="switch"><button id="gridbutton" class="active" aria-pressed="true">Kacheln</button><button id="listbutton" aria-pressed="false">Liste</button></div>
-    </div></div>
-    <div class="notice" id="embedinfo">Embeds sind standardmäßig deaktiviert. Öffentliche Reels und Beiträge können nach Zustimmung mit Instagrams offiziellem Embed-Skript angezeigt werden. Private, gelöschte oder eingeschränkte Inhalte sind meist nicht einbettbar.</div>
+    <div class="headline"><h2 class="sectiontitle"><span id="sectiontitle">Deine Link-Bibliothek</span><span class="meta" id="filtercount">0 Ergebnisse</span></h2>
+      <div class="switch"><button id="gridbutton" class="active" aria-pressed="true">Kacheln</button><button id="listbutton" aria-pressed="false">Liste</button></div></div>
+    <div class="filterbar" id="filterbar"></div>
     <div id="content"></div>
   </div>
-  <div class="footer">instakram v2 · Keine Passwörter · Keine Instagram-API · Kein Cloud-Upload · Fehlende URLs lassen sich nicht rekonstruieren.</div>
+  <div class="footer">instakram · Keine Passwörter · Keine Instagram-API · Kein Cloud-Upload · Fehlende URLs lassen sich nicht rekonstruieren.</div>
 </main>
+
+<aside class="rightbar" id="rightbar" aria-label="Filter und Ordner">
+  <div class="closebar"><button class="secondary" id="closefilters">✕ Schließen</button></div>
+  <details class="panel" data-panel="filter" open><summary>Filter &amp; Ansicht</summary><div class="body">
+    <input class="field" id="search" placeholder="⌕  Link, Chat, Creator, Beschreibung …" aria-label="Links durchsuchen">
+    <select class="field" id="chats" aria-label="Chat auswählen"><option value="">Alle Chats</option></select>
+    <select class="field" id="kind" aria-label="Inhaltstyp"><option value="">Alle Typen</option><option value="reel">Reels</option><option value="post">Beiträge</option><option value="story">Stories</option><option value="instagram">Instagram-Links</option><option value="external">Andere Links</option></select>
+    <button class="secondary" id="consent">◉ Instagram-Vorschau aktivieren</button>
+    <div class="hint" id="embedinfo">Vorschauen sind standardmäßig aus. Nach Zustimmung lädt Instagrams Embed-Skript öffentliche Reels/Beiträge; private oder gelöschte Inhalte sind meist nicht einbettbar.</div>
+    <button class="secondary" id="csv">↓ Gefilterte Links als CSV</button>
+  </div></details>
+  <details class="panel" data-panel="folders" open><summary>Ordner &amp; Gruppen</summary><div class="body">
+    <div id="foldertree" class="foldertree"></div>
+    <div class="buttonrow"><button id="renamefolder" class="tinybutton">Umbenennen</button><button id="deletefolder" class="tinybutton">Löschen</button></div>
+    <div class="subhead">Ordner anlegen</div>
+    <select id="parentfolder" class="field" aria-label="Übergeordneter Ordner"></select>
+    <input id="foldername" class="field" placeholder="Neuer Ordnername">
+    <button id="newfolder" class="secondary">+ Ordner erstellen</button>
+  </div></details>
+  <details class="panel" data-panel="assign" id="assignpanel"><summary>Link-Zuordnung</summary><div class="body"><div id="linkeditor" class="linkeditor"></div></div></details>
+  <details class="panel" data-panel="rules"><summary>Automatische Regeln</summary><div class="body">
+    <select id="rulefolder" class="field" aria-label="Zielgruppe"></select>
+    <select id="rulefield" class="field" aria-label="Regelfeld"><option value="url">Link enthält</option><option value="sender">Absender enthält</option><option value="chat">Chat enthält</option><option value="kind">Typ enthält</option><option value="source">Quelldatei enthält</option><option value="caption">Beschreibung/Hashtag enthält</option><option value="area">Bereich enthält</option></select>
+    <input class="field" id="rulepattern" placeholder="Begriff, z. B. python">
+    <button class="secondary" id="addrule">+ Regel hinzufügen</button>
+    <div id="rulelist" class="rulelist"></div>
+  </div></details>
+  <details class="panel" data-panel="suggest"><summary>Sortier-Vorschläge</summary><div class="body">
+    <button class="secondary" id="localsuggest">✦ Stichwort-Vorschläge</button>
+    <input id="aimodel" class="field" value="llama3.2" aria-label="Lokales Ollama-Modell">
+    <button class="secondary" id="aisuggest">✧ Lokale KI: 20 Treffer</button>
+    <p class="hint">Optional: Ollama muss lokal laufen. Nur Vorschläge – keine automatischen KI-Zuordnungen.</p>
+  </div></details>
+  <details class="panel" data-panel="inbox" id="inboxpanel"><summary>Posteingang-Automatik</summary><div class="body">
+    <label class="checkrow"><input type="checkbox" id="autoenabled"> Eindeutige Treffer automatisch zuordnen</label>
+    <select id="autothreshold" class="field" aria-label="Schwelle"><option value="95">Schwelle 95 / 100 (streng)</option><option value="100">100 / 100 (nur Regeln)</option><option value="90">90 / 100</option><option value="85">85 / 100</option><option value="80">80 / 100</option></select>
+    <button class="secondary" id="savesmart">Einstellungen speichern</button>
+    <p class="hint">Der Wert ist ein heuristischer Signalwert, keine Wahrscheinlichkeit. Gelernt wird aus bestätigten Zuordnungen je Creator, Profil-URL oder Domain.</p>
+  </div></details>
+</aside>
 </div>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id);
 let items=[], folders=[], rules=[], topics=[], selectedTopic=null, textIndex={hashtags:[],keywords:[],links_with_captions:0}, termFilter=null, settings={auto_enabled:true,threshold:95}, chatInfo={}, selectedFolder=0, selectedLink=null, area='all', view='grid', preview=false, loadVersion=0;
-const names={topics:'Links im Themencluster',tags:'Links nach Begriff',inbox:'Intelligenter Posteingang',all:'Deine Link-Bibliothek',chat:'Deine geteilten Links',saved:'Deine gespeicherten Links',archive:'Dein Archiv',other:'Weitere Links'};
+const names={topics:'Links im Themencluster',tags:'Links nach Begriff',inbox:'Posteingang',all:'Deine Link-Bibliothek',chat:'Links aus Chats',saved:'Gespeicherte Links',archive:'Archiv',other:'Weitere Links',import:'Import'};
 const label={reel:'REEL',post:'POST',story:'STORY',instagram:'INSTAGRAM',external:'LINK'};
 const icon={reel:'▷',post:'▧',story:'◌',instagram:'◎',external:'↗'};
-const isInstagram=it=>['reel','post','story','instagram'].includes(it.kind);
+const topicTypes={hashtag:'Hashtag-Themen',creator:'Creator',group:'Deine Gruppen',keyword:'Wort-Themen'};
+const store={get(k,d){try{const v=localStorage.getItem('instakram.'+k);return v===null?d:JSON.parse(v)}catch{return d}},set(k,v){try{localStorage.setItem('instakram.'+k,JSON.stringify(v))}catch{}}};
+const treeState=store.get('tree',{open:{},sort:{chat:'count',tags:'count',topics:'count'},groups:{}});
+const treeQuery={chat:'',tags:'',topics:''};
 const safeInstagramUrl=it=>{try{const p=new URL(it.url);return p.protocol==='https:'&&['instagram.com','www.instagram.com','m.instagram.com'].includes(p.hostname)&&/^\/(reel|p)\/[A-Za-z0-9_-]+\/?$/.test(p.pathname)?'https://www.instagram.com'+p.pathname:null}catch{return null}};
 function setStatus(message,error=false){$('status').textContent=message;$('status').hidden=!message;$('status').style.borderColor=error?'#a45471':'#433451'}
-function activeItems(){const folderIds=selectedFolder?folders.filter(f=>f.id===selectedFolder||f.path.startsWith((folders.find(x=>x.id===selectedFolder)?.path||'NOT_FOUND')+'/')).map(f=>f.id):[];const q=$('search').value.trim().toLowerCase(),chat=$('chats').value,kind=$('kind').value;return items.filter(r=>(area==='all'||area==='tags'||area==='topics'||(area==='inbox'?r.review_status==='pending':(r.areas||[r.area]).includes(area)))&&(!chat||(r.chats||[r.chat]).includes(chat))&&(!kind||r.kind===kind)&&(!selectedFolder||r.folders?.some(id=>folderIds.includes(id)))&&(!selectedTopic||selectedTopic.link_ids.includes(r.id))&&(!termFilter||(r[termFilter.type]||[]).includes(termFilter.term))&&(!q||[r.url,r.chat,(chatInfo[r.chat]||{}).title,r.sender,r.source,r.date,...(r.creators||[]),...(r.captions||[])].some(x=>(x||'').toLowerCase().includes(q))))}
+function folderIds(){if(!selectedFolder)return [];const base=folders.find(x=>x.id===selectedFolder)?.path||'NOT_FOUND';return folders.filter(f=>f.id===selectedFolder||f.path.startsWith(base+'/')).map(f=>f.id)}
+function activeItems(){const ids=folderIds();const q=$('search').value.trim().toLowerCase(),chat=$('chats').value,kind=$('kind').value;return items.filter(r=>(area==='all'||area==='tags'||area==='topics'||area==='import'||(area==='inbox'?r.review_status==='pending':(r.areas||[r.area]).includes(area)))&&(!chat||(r.chats||[r.chat]).includes(chat))&&(!kind||r.kind===kind)&&(!selectedFolder||r.folders?.some(id=>ids.includes(id)))&&(!selectedTopic||selectedTopic.link_ids.includes(r.id))&&(!termFilter||(r[termFilter.type]||[]).includes(termFilter.term))&&(!q||[r.url,r.chat,(chatInfo[r.chat]||{}).title,r.sender,r.source,r.date,...(r.creators||[]),...(r.captions||[])].some(x=>(x||'').toLowerCase().includes(q))))}
 function make(tag,cls,text){const el=document.createElement(tag);if(cls)el.className=cls;if(text!==undefined)el.textContent=text;return el}
 function btn(text,action){const b=make('button','',text);b.type='button';b.addEventListener('click',action);return b}
 function addLink(parent,url,text){const a=make('a','',text);a.href=url;a.target='_blank';a.rel='noopener noreferrer';parent.append(a);return a}
-function enableEmbed(container,it){const uri=safeInstagramUrl(it);if(!uri)return;container.replaceChildren();const slot=make('div','embed-slot');const quote=make('blockquote','instagram-media');quote.setAttribute('data-instgrm-permalink',uri);quote.setAttribute('data-instgrm-version','14');quote.append(addLink(quote,uri,'Auf Instagram ansehen'));slot.append(quote);container.append(slot);if(window.instgrm?.Embeds?.process)window.instgrm.Embeds.process();else if(!document.getElementById('igembedjs')){const s=document.createElement('script');s.id='igembedjs';s.src='https://www.instagram.com/embed.js';s.async=true;s.onload=()=>window.instgrm?.Embeds?.process?.();s.onerror=()=>slot.append(make('p','', 'Instagram-Vorschau konnte nicht geladen werden. Link direkt öffnen.'));document.head.append(s)}}
-function tile(it){const card=make('article','tile');const art=make('div','thumbnail');art.append(make('span','glyph',icon[it.kind]||'↗'),make('span','kind',label[it.kind]||'LINK'));card.append(art);const body=make('div','tile-body');const title=make('h3','',it.url.replace(/^https?:\/\/(www\.)?/,'').slice(0,100));title.title=it.url;body.append(title);const meta=[it.chat?chatLabel(it.chat):(it.sender||it.area),it.date?it.date.slice(0,16).replace('T',' · '):''].filter(Boolean).join(' • ');body.append(make('div','small',meta));
-if(it.captions?.length){
-  const description=make('p','caption-preview',it.captions[0].slice(0,180)+(it.captions[0].length>180?'…':''));
-  description.title=it.captions[0];body.append(description);
-}
-if(it.hashtags?.length){
-  const tags=make('div','cardtags');
-  it.hashtags.slice(0,7).forEach(tag=>{
-    const b=btn('#'+tag,()=>{termFilter={type:'hashtags',term:tag};area='tags';selectedFolder=0;
-      document.querySelectorAll('[data-area]').forEach(x=>x.classList.toggle('active',x.dataset.area==='tags'));
-      renderFolders();renderTextIndex();render();$('tagexplorer').scrollIntoView({behavior:'smooth',block:'start'})});
-    tags.append(b);
-  });
-  body.append(tags);
-}
-const buttons=make('div','tile-actions');addLink(buttons,it.url,'↗ Öffnen');buttons.append(btn(area==='inbox'?'Prüfen':'Gruppen',()=>openLink(it)));body.append(buttons);card.append(body);if(preview&&safeInstagramUrl(it)){const previewBox=make('div');card.append(previewBox);enableEmbed(previewBox,it)}return card}
-function line(it){const r=make('div','listrow');r.append(make('strong','',label[it.kind]||'LINK'));const link=make('a','link',it.url);link.href=it.url;link.target='_blank';link.rel='noopener noreferrer';link.title=it.url;r.append(link);r.append(make('div','muted',it.chat?chatLabel(it.chat):(it.sender||it.area)));r.append(btn(area==='inbox'?'Prüfen':'Gruppen',()=>openLink(it)));return r}
-function render(){const filtered=activeItems();$('filtercount').textContent=filtered.length.toLocaleString('de-DE')+' Ergebnisse';$('sectiontitle').textContent=(selectedFolder?'Ordner: '+(folders.find(x=>x.id===selectedFolder)?.path||'') : names[area]);$('inboxcontrols').hidden=area!=='inbox';$('tagexplorer').hidden=area!=='tags';$('topicexplorer').hidden=area!=='topics';$('importpage').hidden=area!=='import';$('results').hidden=area==='import';$('chatexplorer').hidden=area!=='chat';if(area==='import')return;if(area==='chat')renderChats();const root=$('content');root.replaceChildren();if(!filtered.length){const e=make('div','empty');e.append(make('div','symbol','◇'),make('strong','Keine Links gefunden'),make('div','',items.length?'Ändere deine Filter oder wähle einen anderen Bereich.':'Importiere einen Instagram-Export, um loszulegen.'));root.append(e);return}
-const max=view==='grid'?80:500;const shown=filtered.slice(0,max);const wrap=make('div',view==='grid'?'grid':'list');shown.forEach(it=>wrap.append(view==='grid'?tile(it):line(it)));root.append(wrap);if(filtered.length>max){root.append(make('p','hint','Es werden die ersten '+max+' Einträge angezeigt. Filtere genauer oder exportiere alle Treffer als CSV.'))}}
 function chatLabel(ch){const c=chatInfo[ch];return c&&c.title?c.title:ch}
-function renderChats(){const grid=$('chatgrid');grid.replaceChildren();const linkCounts={};for(const r of items)for(const ch of new Set(r.chats||[r.chat]))if(ch)linkCounts[ch]=(linkCounts[ch]||0)+1;const q=$('chatsearch').value.trim().toLowerCase(),current=$('chats').value;const list=Object.keys(linkCounts).filter(ch=>!q||chatLabel(ch).toLowerCase().includes(q)||ch.toLowerCase().includes(q)).sort((a,b)=>linkCounts[b]-linkCounts[a]||chatLabel(a).localeCompare(chatLabel(b),'de'));for(const ch of list){const c=chatInfo[ch]||{};const card=btn('',()=>{$('chats').value=current===ch?'':ch;render();$('sectiontitle').scrollIntoView({behavior:'smooth',block:'start'})});card.className='topic-card'+(current===ch?' selected':'');card.append(make('span','topic-type',c.is_group?'👥 Gruppenchat · '+c.participants+' Personen':'Chat'),make('strong','',chatLabel(ch)),make('span','topic-count',linkCounts[ch].toLocaleString('de-DE')+(linkCounts[ch]===1?' Link':' Links')));grid.append(card)}if(!list.length)grid.append(make('p','hint',Object.keys(linkCounts).length?'Kein Chat passt zur Suche.':'Noch keine Chats mit Links importiert.'))}
-function counts(){for(const a of ['all','chat','saved','archive','other','inbox','tags'])$('count-'+a).textContent=(a==='all'?items.length:a==='inbox'?items.filter(r=>r.review_status==='pending').length:a==='tags'?textIndex.links_with_captions:a==='topics'?topics.length:items.filter(r=>(r.areas||[r.area]).includes(a)).length).toLocaleString('de-DE');$('s-all').textContent=items.length.toLocaleString('de-DE');$('s-reels').textContent=items.filter(r=>r.kind==='reel').length.toLocaleString('de-DE');$('s-chats').textContent=new Set(items.flatMap(r=>r.chats||[r.chat]).filter(Boolean)).size.toLocaleString('de-DE');$('s-saved').textContent=items.filter(r=>(r.areas||[r.area]).includes('saved')).length.toLocaleString('de-DE');const chats=[...new Set(items.flatMap(r=>r.chats||[r.chat]).filter(Boolean))].sort();$('chats').replaceChildren(new Option('Alle Chats',''));chats.forEach(ch=>{const c=chatInfo[ch];$('chats').add(new Option(c&&c.title?(c.is_group?'👥 ':'')+c.title+' ('+c.links+')':ch,ch))});render()}
-async function importFile(file){if(!file)return;if(!/\.(json|zip)$/i.test(file.name)){setStatus('Bitte eine ZIP- oder JSON-Datei auswählen.',true);return}if(file.size>800*1024*1024){setStatus('Die Datei überschreitet 800 MB.',true);return}const version=++loadVersion;setStatus('Datei wird lokal verarbeitet …');$('choose').disabled=true;try{const response=await fetch('/api/import',{method:'POST',headers:{'Content-Type':'application/octet-stream','X-Filename':file.name.replace(/[^\w.-]/g,'_')},body:file});const data=await response.json();if(!response.ok)throw Error(data.error||'Import fehlgeschlagen');if(version!==loadVersion)return;items=data.items||[];folders=data.folders||[];rules=data.rules||[];settings=data.settings||settings;if(data.chats)chatInfo=Object.fromEntries(data.chats.map(c=>[c.chat,c]));textIndex=data.textIndex||textIndex;renderTextIndex();$('autoenabled').checked=!!settings.auto_enabled;$('autothreshold').value=String(settings.threshold);$('results').hidden=false;renderFolders();renderRules();refreshTopics();area='all';document.querySelectorAll('[data-area]').forEach(b=>b.classList.toggle('active',b.dataset.area===area));$('search').value='';$('kind').value='';preview=false;$('consent').textContent='◉ Instagram-Vorschau aktivieren';counts();setStatus(items.length+' Links importiert · '+data.jsonFiles+' JSON-Dateien gelesen'+(data.errors?' · '+data.errors+' Dateien übersprungen':'')+'.')}catch(error){setStatus(error.message||'Import fehlgeschlagen',true)}finally{$('choose').disabled=false}}
+function fmt(n){return Number(n||0).toLocaleString('de-DE')}
+
+/* ---------- navigation ---------- */
+function setArea(next){area=next;document.querySelectorAll('[data-area]').forEach(x=>x.classList.toggle('active',x.dataset.area===area));if(['chat','tags','topics'].includes(area))openTree(area,true)}
+function goArea(next){if(next!==area){selectedTopic=null;termFilter=null;if(area==='chat'||next==='chat')$('chats').value=''}setArea(next);renderTrees();render()}
+function openTree(key,open){treeState.open[key]=open;store.set('tree',treeState);const box=$('tree-'+key),caret=document.querySelector('[data-tree="'+key+'"]');if(box)box.hidden=!open;if(caret)caret.setAttribute('aria-expanded',String(open))}
+
+/* ---------- left trees ---------- */
+function treeSection(key,groups,emptyText){
+  const box=$('tree-'+key);if(!box)return;
+  const hadFocus=document.activeElement&&box.contains(document.activeElement)&&document.activeElement.tagName==='INPUT';
+  box.replaceChildren();
+  const tools=make('div','treetools');const input=make('input');input.placeholder='Suchen …';input.value=treeQuery[key];input.setAttribute('aria-label','Liste durchsuchen');
+  input.addEventListener('input',()=>{treeQuery[key]=input.value;renderTrees()});
+  const seg=make('div','seg');for(const [mode,text] of [['count','Häufigkeit'],['alpha','A–Z']]){const b=btn(text,()=>{treeState.sort[key]=mode;store.set('tree',treeState);renderTrees()});b.className=treeState.sort[key]===mode?'on':'';b.title='Sortieren nach '+text;seg.append(b)}
+  tools.append(input,seg);box.append(tools);
+  const q=treeQuery[key].trim().toLowerCase();let any=false;
+  for(const g of groups){
+    let leaves=g.leaves.filter(l=>!q||l.label.toLowerCase().includes(q));
+    if(!leaves.length)continue;any=true;
+    leaves.sort(treeState.sort[key]==='alpha'?(a,b)=>a.label.localeCompare(b.label,'de',{sensitivity:'base'}):(a,b)=>b.count-a.count||a.label.localeCompare(b.label,'de'));
+    const gid=key+':'+g.id;const det=make('details','treegroup');det.open=treeState.groups[gid]!==undefined?treeState.groups[gid]:(!!q||leaves.some(l=>l.on)||g.defaultOpen);
+    det.addEventListener('toggle',()=>{treeState.groups[gid]=det.open;store.set('tree',treeState)});
+    const sum=make('summary');sum.append(make('span','',g.label),make('span','',fmt(leaves.length)));det.append(sum);
+    const list=make('div','leaves');const max=250;
+    for(const l of leaves.slice(0,max)){const b=btn('',l.action);b.className='leaf'+(l.on?' on':'');b.title=l.title||l.label;b.append(make('span','',l.label),make('span','',fmt(l.count)));list.append(b)}
+    if(leaves.length>max)list.append(make('div','treehint','+ '+fmt(leaves.length-max)+' weitere – Suche nutzen'));
+    det.append(list);box.append(det);
+  }
+  if(!any)box.append(make('div','treehint',q?'Nichts gefunden.':emptyText));
+  if(hadFocus){const i=box.querySelector('input');i.focus();i.setSelectionRange(i.value.length,i.value.length)}
+}
+function renderTrees(){
+  // Chats: group chats vs. direct chats
+  const linkCounts={};for(const r of items)for(const ch of new Set(r.chats||[r.chat]))if(ch)linkCounts[ch]=(linkCounts[ch]||0)+1;
+  const current=$('chats').value;
+  const chatLeaf=ch=>({label:chatLabel(ch),count:linkCounts[ch],on:area==='chat'&&current===ch,title:chatLabel(ch)+(chatInfo[ch]?.is_group?' · '+chatInfo[ch].participants+' Personen':''),action:()=>{const same=area==='chat'&&$('chats').value===ch;selectedTopic=null;termFilter=null;setArea('chat');$('chats').value=same?'':ch;renderTrees();render()}});
+  const all=Object.keys(linkCounts);
+  treeSection('chat',[
+    {id:'group',label:'👥 Gruppenchats',defaultOpen:true,leaves:all.filter(ch=>chatInfo[ch]?.is_group).map(chatLeaf)},
+    {id:'direct',label:'Einzelchats',defaultOpen:true,leaves:all.filter(ch=>!chatInfo[ch]?.is_group).map(chatLeaf)}
+  ],'Noch keine Chats mit Links importiert.');
+  // Hashtags & words
+  const termLeaf=type=>e=>({label:(type==='hashtags'?'#':'')+e.term,count:e.count,on:termFilter?.type===type&&termFilter?.term===e.term,action:()=>{const same=termFilter?.type===type&&termFilter?.term===e.term;selectedTopic=null;setArea('tags');termFilter=same?null:{type,term:e.term};renderTrees();render()}});
+  treeSection('tags',[
+    {id:'hashtags',label:'Hashtags',defaultOpen:true,leaves:textIndex.hashtags.map(termLeaf('hashtags'))},
+    {id:'keywords',label:'Wörter',defaultOpen:false,leaves:textIndex.keywords.map(termLeaf('keywords'))}
+  ],'Noch keine Begriffe aus exportierten Beschreibungen.');
+  // Topic clusters by type
+  treeSection('topics',Object.entries(topicTypes).map(([type,text])=>({id:type,label:text,defaultOpen:type==='hashtag'||type==='creator',leaves:topics.filter(t=>t.type===type).map(t=>({label:t.title,count:t.count,on:selectedTopic?.id===t.id,title:t.explanation,action:()=>{const same=selectedTopic?.id===t.id;termFilter=null;setArea('topics');selectedTopic=same?null:t;renderTrees();render()}}))})),'Noch keine Themencluster. Sie entstehen aus gemeinsamen Hashtags, Wörtern, Creatorn und deinen Gruppen.');
+}
+
+/* ---------- center ---------- */
+function renderFilterbar(){
+  const bar=$('filterbar');bar.replaceChildren();
+  const chip=(text,clear)=>{const c=make('span','chip',text);const x=btn('×',clear);x.title='Filter entfernen';x.setAttribute('aria-label','Filter „'+text+'“ entfernen');c.append(x);bar.append(c);return c};
+  if($('chats').value)chip('Chat: '+chatLabel($('chats').value),()=>{$('chats').value='';renderTrees();render()});
+  if(termFilter)chip((termFilter.type==='hashtags'?'#':'Wort: ')+termFilter.term,()=>{termFilter=null;renderTrees();render()});
+  if(selectedTopic){const c=chip('Cluster: '+selectedTopic.title+' ('+selectedTopic.count+')',()=>{selectedTopic=null;renderTrees();render()});
+    const act=make('span','topicaction');const sel=make('select','field');sel.setAttribute('aria-label','Zielordner wählen');groupOptions(sel);const go=btn('Alle zu Gruppe hinzufügen',()=>assignTopic(Number(sel.value)));go.className='secondary';act.append(sel,go);bar.append(act);c.title=selectedTopic.explanation}
+  if(selectedFolder)chip('Ordner: '+(folders.find(x=>x.id===selectedFolder)?.path||''),()=>{selectedFolder=0;renderFolders();render()});
+  if($('kind').value)chip('Typ: '+$('kind').selectedOptions[0].text,()=>{$('kind').value='';render()});
+  if($('search').value.trim())chip('Suche: '+$('search').value.trim(),()=>{$('search').value='';render()});
+  bar.hidden=!bar.childElementCount;
+}
+function enableEmbed(container,it){const uri=safeInstagramUrl(it);if(!uri)return;container.replaceChildren();const slot=make('div','embed-slot');const quote=make('blockquote','instagram-media');quote.setAttribute('data-instgrm-permalink',uri);quote.setAttribute('data-instgrm-version','14');quote.append(addLink(quote,uri,'Auf Instagram ansehen'));slot.append(quote);container.append(slot);if(window.instgrm?.Embeds?.process)window.instgrm.Embeds.process();else if(!document.getElementById('igembedjs')){const s=document.createElement('script');s.id='igembedjs';s.src='https://www.instagram.com/embed.js';s.async=true;s.onload=()=>window.instgrm?.Embeds?.process?.();s.onerror=()=>slot.append(make('p','','Instagram-Vorschau konnte nicht geladen werden. Link direkt öffnen.'));document.head.append(s)}}
+function tile(it){const card=make('article','tile');const art=make('div','thumbnail');art.append(make('span','glyph',icon[it.kind]||'↗'),make('span','kind',label[it.kind]||'LINK'));card.append(art);const body=make('div','tile-body');const title=make('h3','',it.url.replace(/^https?:\/\/(www\.)?/,'').slice(0,100));title.title=it.url;body.append(title);
+  const who=it.creators?.length?'@'+it.creators[0]:'';
+  const meta=[it.chat?chatLabel(it.chat):(it.sender||it.area),who,it.date?it.date.slice(0,16).replace('T',' · '):''].filter(Boolean).join(' • ');body.append(make('div','small',meta));
+  if(it.captions?.length){const d=make('p','caption-preview',it.captions[0].slice(0,180)+(it.captions[0].length>180?'…':''));d.title=it.captions[0];body.append(d)}
+  if(it.hashtags?.length){const tags=make('div','cardtags');it.hashtags.slice(0,7).forEach(tag=>tags.append(btn('#'+tag,()=>{selectedTopic=null;selectedFolder=0;setArea('tags');termFilter={type:'hashtags',term:tag};renderFolders();renderTrees();render()})));body.append(tags)}
+  const buttons=make('div','tile-actions');addLink(buttons,it.url,'↗ Öffnen');buttons.append(btn(area==='inbox'?'Prüfen':'Gruppen',()=>openLink(it)));body.append(buttons);card.append(body);
+  if(preview&&safeInstagramUrl(it)){const box=make('div');card.append(box);enableEmbed(box,it)}return card}
+function line(it){const r=make('div','listrow');r.append(make('strong','',label[it.kind]||'LINK'));const link=make('a','link',it.url);link.href=it.url;link.target='_blank';link.rel='noopener noreferrer';link.title=it.url;r.append(link);r.append(make('div','muted',it.chat?chatLabel(it.chat):(it.sender||it.area)));r.append(btn(area==='inbox'?'Prüfen':'Gruppen',()=>openLink(it)));return r}
+function render(){
+  $('importpage').hidden=area!=='import';$('results').hidden=area==='import';
+  if(area==='import')return;
+  const filtered=activeItems();
+  $('filtercount').textContent=fmt(filtered.length)+' Ergebnisse';
+  $('sectiontitle').textContent=names[area]||names.all;
+  renderFilterbar();
+  const root=$('content');root.replaceChildren();
+  if(!filtered.length){const e=make('div','empty');e.append(make('div','symbol','◇'),make('strong','','Keine Links gefunden'),make('div','',items.length?'Ändere deine Filter oder wähle einen anderen Bereich.':'Importiere einen Instagram-Export, um loszulegen.'));root.append(e);return}
+  const max=view==='grid'?80:500;const wrap=make('div',view==='grid'?'grid':'list');filtered.slice(0,max).forEach(it=>wrap.append(view==='grid'?tile(it):line(it)));root.append(wrap);
+  if(filtered.length>max)root.append(make('p','hint','Es werden die ersten '+max+' Einträge angezeigt. Filtere genauer oder exportiere alle Treffer als CSV.'));
+}
+function counts(){
+  const has=a=>items.filter(r=>(r.areas||[r.area]).includes(a)).length;
+  for(const a of ['chat','saved','archive','other'])$('count-'+a).textContent=fmt(has(a));
+  $('count-all').textContent=fmt(items.length);$('count-inbox').textContent=fmt(items.filter(r=>r.review_status==='pending').length);
+  $('count-tags').textContent=fmt(textIndex.links_with_captions);$('count-topics').textContent=fmt(topics.length);
+  const chatNames=[...new Set(items.flatMap(r=>r.chats||[r.chat]).filter(Boolean))];
+  $('s-all').textContent=fmt(items.length);$('s-reels').textContent=fmt(items.filter(r=>r.kind==='reel').length);$('s-chats').textContent=fmt(chatNames.length);$('s-saved').textContent=fmt(has('saved'));
+  const keep=$('chats').value;$('chats').replaceChildren(new Option('Alle Chats',''));chatNames.sort((a,b)=>chatLabel(a).localeCompare(chatLabel(b),'de')).forEach(ch=>{const c=chatInfo[ch];$('chats').add(new Option((c?.is_group?'👥 ':'')+chatLabel(ch),ch))});$('chats').value=chatNames.includes(keep)?keep:'';
+  renderTrees();render();
+}
+
+/* ---------- data ---------- */
+async function importFile(file){if(!file)return;if(!/\.(json|zip)$/i.test(file.name)){setStatus('Bitte eine ZIP- oder JSON-Datei auswählen.',true);return}if(file.size>800*1024*1024){setStatus('Die Datei überschreitet 800 MB.',true);return}const version=++loadVersion;setStatus('Datei wird lokal verarbeitet …');$('choose').disabled=true;try{const response=await fetch('/api/import',{method:'POST',headers:{'Content-Type':'application/octet-stream','X-Filename':file.name.replace(/[^\w.-]/g,'_')},body:file});const data=await response.json();if(!response.ok)throw Error(data.error||'Import fehlgeschlagen');if(version!==loadVersion)return;$('search').value='';$('kind').value='';$('chats').value='';termFilter=null;selectedTopic=null;preview=false;$('consent').textContent='◉ Instagram-Vorschau aktivieren';setArea('all');applyState(data);setStatus(fmt(items.length)+' Links in der Bibliothek · '+data.jsonFiles+' JSON-Dateien gelesen'+(data.errors?' · '+data.errors+' Dateien übersprungen':'')+'.')}catch(error){setStatus(error.message||'Import fehlgeschlagen',true)}finally{$('choose').disabled=false}}
 async function api(route,data){const response=await fetch('/api/'+route,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const body=await response.json();if(!response.ok)throw Error(body.error||'Aktion fehlgeschlagen');applyState(body);return body}
-function applyState(data){items=data.items||[];if(data.textIndex){textIndex=data.textIndex;renderTextIndex()}folders=data.folders||[];rules=data.rules||[];settings=data.settings||settings;if(data.chats)chatInfo=Object.fromEntries(data.chats.map(c=>[c.chat,c]));$('autoenabled').checked=!!settings.auto_enabled;$('autothreshold').value=String(settings.threshold);$('results').hidden=false;counts();renderFolders();renderRules();refreshTopics();if(selectedLink){selectedLink=items.find(x=>x.id===selectedLink.id)||null;renderSelection()}}
+function applyState(data){items=data.items||[];if(data.textIndex)textIndex=data.textIndex;folders=data.folders||[];rules=data.rules||[];settings=data.settings||settings;if(data.chats)chatInfo=Object.fromEntries(data.chats.map(c=>[c.chat,c]));$('autoenabled').checked=!!settings.auto_enabled;$('autothreshold').value=String(settings.threshold);if(termFilter&&!(textIndex[termFilter.type]||[]).some(e=>e.term===termFilter.term))termFilter=null;renderFolders();renderRules();counts();refreshTopics();if(selectedLink){selectedLink=items.find(x=>x.id===selectedLink.id)||null;renderSelection()}}
 function groupOptions(select,includeRoot=false){select.replaceChildren();if(includeRoot)select.add(new Option('Hauptebene',''));for(const f of folders)select.add(new Option(f.path,String(f.id)))}
-async function refreshTopics(){
-  try{
-    const response=await fetch('/api/topics');
-    if(!response.ok)throw Error('Themen konnten nicht geladen werden.');
-    const data=await response.json();
-    topics=data.topics||[];
-    if(selectedTopic)selectedTopic=topics.find(t=>t.id===selectedTopic.id)||null;
-    renderTopics();counts();
-  }catch(e){$('topicnotice').textContent=e.message;setStatus(e.message,true)}
-}
-function renderTopics(){
-  $('count-topics').textContent=String(topics.length);
-  const grid=$('topicgrid');grid.replaceChildren();
-  $('topicnotice').textContent=topics.length?
-    topics.length+' Themencluster aus vorhandenen Daten erkannt.':
-    'Noch keine Themencluster. Importiere Beschreibungen mit gemeinsamen Hashtags oder ordne mehrere Links einer Gruppe zu.';
-  for(const topic of topics){
-    const card=btn('',()=>{area='topics';selectedTopic=topic;selectedFolder=0;termFilter=null;
-      document.querySelectorAll('[data-area]').forEach(b=>b.classList.toggle('active',b.dataset.area==='topics'));
-      renderFolders();renderTopics();render();});
-    card.className='topic-card'+(selectedTopic?.id===topic.id?' selected':'');
-    card.append(make('span','topic-type',({hashtag:'Hashtag-Thema',group:'Gruppen-Thema',keyword:'Wort-Thema',creator:'Creator-Thema'})[topic.type]||'Thema'));
-    card.append(make('strong','',topic.title),make('span','topic-count',topic.count+' Links'));
-    const terms=make('div','topic-terms');
-    for(const t of topic.hashtags.slice(0,3))terms.append(make('span','', '#'+t.term));
-    if(!topic.hashtags.length)for(const t of topic.keywords.slice(0,3))terms.append(make('span','',t.term));
-    card.append(terms);
-    grid.append(card);
-  }
-  const selection=$('topicselection');
-  selection.hidden=!selectedTopic;
-  if(selectedTopic){
-    $('topicname').textContent=selectedTopic.title+' · '+selectedTopic.count+' Links';
-    $('topicdetails').textContent=selectedTopic.explanation+'. Häufigste Begriffe: '+
-      [...selectedTopic.hashtags.map(t=>'#'+t.term),...selectedTopic.keywords.map(t=>t.term)].slice(0,7).join(', ');
-  }
-  groupOptions($('topicfolder'));
-}
-$('refreshclusters').onclick=refreshTopics;
-$('topiclear').onclick=()=>{selectedTopic=null;renderTopics();render()};
-$('topicassign').onclick=async()=>{
-  if(!selectedTopic)return;
-  const fid=Number($('topicfolder').value);
-  const folder=folders.find(f=>f.id===fid);
-  if(!folder)return setStatus('Bitte zuerst eine Zielgruppe auswählen.',true);
-  if(selectedTopic.count>500)return setStatus('Maximal 500 Links pro Aktion. Bitte Cluster weiter eingrenzen.',true);
-  if(!confirm('Alle '+selectedTopic.count+' Links aus „'+selectedTopic.title+'“ zusätzlich „'+folder.path+'“ zuordnen?'))return;
-  try{
-    await api('topics/assign',{topic_id:selectedTopic.id,folder_id:fid});
-    await refreshTopics();
-    setStatus(selectedTopic?selectedTopic.count+' Links zugeordnet.':'Zuordnung gespeichert.');
-  }catch(e){setStatus(e.message,true)}
-};
-function renderTextIndex(){
-  $('captioncoverage').textContent=String(textIndex.links_with_captions||0);
-  $('hashtagsnum').textContent='('+textIndex.hashtags.length+')';
-  $('keywordsnum').textContent='('+textIndex.keywords.length+')';
-  for(const [type,id] of [['hashtags','hashtagscloud'],['keywords','keywordscloud']]){
-    const cloud=$(id);cloud.replaceChildren();
-    for(const entry of textIndex[type].slice(0,150)){
-      const b=btn((type==='hashtags'?'#':'')+entry.term+' · '+entry.count,()=>{
-        termFilter={type,term:entry.term};area='tags';
-        document.querySelectorAll('[data-area]').forEach(x=>x.classList.toggle('active',x.dataset.area==='tags'));
-        renderTextIndex();render();
-      });
-      b.className='term-chip'+(termFilter?.type===type&&termFilter?.term===entry.term?' selected':'');
-      b.title=entry.count+' eindeutige Links';cloud.append(b);
-    }
-    if(!textIndex[type].length)cloud.append(make('p','hint','Noch keine Begriffe aus exportierten Beschreibungen gefunden.'));
-  }
-}
-$('cleartextfilter').onclick=()=>{termFilter=null;renderTextIndex();render()};
-function renderFolders(){const list=$('foldertree');list.replaceChildren();const all=btn('◈  Alle Ordner',()=>{selectedFolder=0;renderFolders();render()});all.className='folderitem'+(!selectedFolder?' chosen':'');list.append(all);folders.forEach(f=>{const b=btn('▸ '+f.name,()=>{selectedFolder=f.id;renderFolders();render()});b.className='folderitem'+(selectedFolder===f.id?' chosen':'');b.style.paddingLeft=(12+Math.min(8,f.path.split('/').length)*13)+'px';b.title=f.path;list.append(b)});groupOptions($('parentfolder'),true);groupOptions($('rulefolder'));renderSelection()}
-function renderRules(){const list=$('rulelist');list.replaceChildren();for(const rule of rules){const f=folders.find(x=>x.id===rule.folder_id);const row=make('div','ruleitem');row.append(make('span','', (f?.path||'?')+' ← '+rule.field+' enthält „'+rule.pattern+'“'));row.append(btn('×',async()=>{if(!confirm('Regel entfernen? Bestehende Zuordnungen bleiben erhalten.'))return;try{await api('rule/delete',{rule_id:rule.id})}catch(e){setStatus(e.message,true)}}));list.append(row)}}
-function openLink(it){selectedLink=it;renderSelection();$('organizer').scrollIntoView({behavior:'smooth',block:'start'})}
-function renderSelection(){const panel=$('linkeditor');panel.replaceChildren();if(!selectedLink){panel.append(make('div','hint','Öffne bei einem Link „Gruppen“, um ihn mehreren Ordnern zuzuordnen.'));return}panel.append(make('strong','',selectedLink.url));const area=make('div','selection-list');for(const f of folders){const row=make('label','checkrow');const input=document.createElement('input');input.type='checkbox';input.value=String(f.id);input.checked=selectedLink.folders?.includes(f.id)||false;input.addEventListener('change',()=>{});row.append(input,make('span','',f.path));area.append(row)}panel.append(area);
-const actions=make('div','reviewactions');
-if(selectedLink.review_status!=='reviewed'){
-  actions.append(btn('✓ Zuordnung bestätigen',async()=>{
-    try{const folder_ids=[...area.querySelectorAll('input:checked')].map(el=>Number(el.value));await api('inbox/review',{link_id:selectedLink.id,folder_ids,status:'reviewed'});setStatus('Korrektur gespeichert – ähnliche Links profitieren künftig davon.')}catch(e){setStatus(e.message,true)}
-  }));
-  actions.append(btn('Später prüfen',async()=>{try{await api('inbox/review',{link_id:selectedLink.id,folder_ids:selectedLink.folders||[],status:'skipped'});setStatus('Link aus dem Posteingang entfernt.')}catch(e){setStatus(e.message,true)}}));
-}else{
-  actions.append(btn('Erneut prüfen',async()=>{try{await api('inbox/undo',{link_id:selectedLink.id});setStatus('Link wieder im Posteingang.')}catch(e){setStatus(e.message,true)}}));
-}
-panel.append(actions);
-const suggestions=selectedLink.suggestions||[];if(suggestions.length){panel.append(make('h4','', 'Sortiervorschläge (erst nach Bestätigung)'));for(const item of suggestions){const f=folders.find(x=>x.id===item.folder_id);const row=make('div','suggestion');row.append(make('span','',(f?.path||'?')+' · '+item.reason+' ['+item.method+']'));row.append(btn('Übernehmen',async()=>{try{await api('assign',{link_id:selectedLink.id,folder_id:item.folder_id,active:true})}catch(e){setStatus(e.message,true)}}));panel.append(row)}}}
+async function refreshTopics(){try{const response=await fetch('/api/topics');if(!response.ok)throw Error('Themen konnten nicht geladen werden.');const data=await response.json();topics=data.topics||[];if(selectedTopic)selectedTopic=topics.find(t=>t.id===selectedTopic.id)||null;$('count-topics').textContent=fmt(topics.length);renderTrees();render()}catch(e){setStatus(e.message,true)}}
+async function assignTopic(fid){if(!selectedTopic)return;const folder=folders.find(f=>f.id===fid);if(!folder)return setStatus('Bitte zuerst eine Zielgruppe auswählen.',true);if(selectedTopic.count>500)return setStatus('Maximal 500 Links pro Aktion. Bitte Cluster weiter eingrenzen.',true);if(!confirm('Alle '+selectedTopic.count+' Links aus „'+selectedTopic.title+'“ zusätzlich „'+folder.path+'“ zuordnen?'))return;try{const n=selectedTopic.count;await api('topics/assign',{topic_id:selectedTopic.id,folder_id:fid});setStatus(n+' Links zugeordnet.')}catch(e){setStatus(e.message,true)}}
+
+/* ---------- right sidebar ---------- */
+function renderFolders(){const list=$('foldertree');list.replaceChildren();const all=btn('◈  Alle Ordner',()=>{selectedFolder=0;renderFolders();render()});all.className='folderitem'+(!selectedFolder?' chosen':'');list.append(all);folders.forEach(f=>{const b=btn('▸ '+f.name,()=>{selectedFolder=selectedFolder===f.id?0:f.id;renderFolders();render()});b.className='folderitem'+(selectedFolder===f.id?' chosen':'');b.style.paddingLeft=(10+Math.min(8,f.path.split('/').length-1)*13)+'px';b.title=f.path;list.append(b)});groupOptions($('parentfolder'),true);groupOptions($('rulefolder'));renderSelection()}
+function renderRules(){const list=$('rulelist');list.replaceChildren();for(const rule of rules){const f=folders.find(x=>x.id===rule.folder_id);const row=make('div','ruleitem');row.append(make('span','',(f?.path||'?')+' ← '+rule.field+' enthält „'+rule.pattern+'“'));row.append(btn('×',async()=>{if(!confirm('Regel entfernen? Bestehende Zuordnungen bleiben erhalten.'))return;try{await api('rule/delete',{rule_id:rule.id})}catch(e){setStatus(e.message,true)}}));list.append(row)}}
+function showPanel(id){const p=$(id);p.open=true;if(matchMedia('(max-width:1180px)').matches)toggleRight(true);p.scrollIntoView({behavior:'smooth',block:'nearest'})}
+function openLink(it){selectedLink=it;renderSelection();showPanel('assignpanel')}
+function renderSelection(){const panel=$('linkeditor');panel.replaceChildren();if(!selectedLink){panel.append(make('div','hint','Klick bei einem Link auf „Gruppen“ bzw. „Prüfen“, um ihn hier Ordnern zuzuordnen.'));return}panel.append(make('strong','',selectedLink.url));const list=make('div','selection-list');for(const f of folders){const row=make('label','checkrow');const input=document.createElement('input');input.type='checkbox';input.value=String(f.id);input.checked=selectedLink.folders?.includes(f.id)||false;row.append(input,make('span','',f.path));list.append(row)}panel.append(list);
+  const actions=make('div','reviewactions');
+  if(selectedLink.review_status!=='reviewed'){
+    actions.append(btn('✓ Zuordnung bestätigen',async()=>{try{const folder_ids=[...list.querySelectorAll('input:checked')].map(el=>Number(el.value));await api('inbox/review',{link_id:selectedLink.id,folder_ids,status:'reviewed'});setStatus('Zuordnung gespeichert – ähnliche Links profitieren künftig davon.')}catch(e){setStatus(e.message,true)}}));
+    actions.append(btn('Später prüfen',async()=>{try{await api('inbox/review',{link_id:selectedLink.id,folder_ids:selectedLink.folders||[],status:'skipped'});setStatus('Link aus dem Posteingang entfernt.')}catch(e){setStatus(e.message,true)}}));
+  }else{actions.append(btn('Erneut prüfen',async()=>{try{await api('inbox/undo',{link_id:selectedLink.id});setStatus('Link wieder im Posteingang.')}catch(e){setStatus(e.message,true)}}))}
+  panel.append(actions);
+  const suggestions=selectedLink.suggestions||[];if(suggestions.length){panel.append(make('h4','','Sortiervorschläge (erst nach Bestätigung)'));for(const item of suggestions){const f=folders.find(x=>x.id===item.folder_id);const row=make('div','suggestion');row.append(make('span','',(f?.path||'?')+' · '+item.reason+' ['+item.method+']'));row.append(btn('Übernehmen',async()=>{try{await api('assign',{link_id:selectedLink.id,folder_id:item.folder_id,active:true})}catch(e){setStatus(e.message,true)}}));panel.append(row)}}}
+function toggleRight(open){$('rightbar').classList.toggle('open',open);$('togglefilters').setAttribute('aria-expanded',String(open))}
+
+/* ---------- handlers ---------- */
 $('newfolder').onclick=async()=>{const name=$('foldername').value.trim();if(!name)return;try{await api('folder',{name,parent_id:$('parentfolder').value?Number($('parentfolder').value):null});$('foldername').value='';setStatus('Ordner gespeichert.')}catch(e){setStatus(e.message,true)}};
 $('renamefolder').onclick=async()=>{if(!selectedFolder)return setStatus('Wähle zuerst einen Ordner.',true);const f=folders.find(x=>x.id===selectedFolder);const name=prompt('Neuer Ordnername',f?.name||'');if(!name)return;try{await api('folder/rename',{folder_id:selectedFolder,name});setStatus('Ordner umbenannt.')}catch(e){setStatus(e.message,true)}};
 $('deletefolder').onclick=async()=>{if(!selectedFolder)return setStatus('Wähle zuerst einen Ordner.',true);if(!confirm('Diesen Ordner mitsamt Unterordnern und Zuordnungen löschen? Die eigentlichen Links bleiben erhalten.'))return;try{await api('folder/delete',{folder_id:selectedFolder});selectedFolder=0;renderFolders();render();setStatus('Ordner gelöscht.')}catch(e){setStatus(e.message,true)}};
 $('addrule').onclick=async()=>{const pattern=$('rulepattern').value.trim();if(!pattern||!$('rulefolder').value)return;try{await api('rule',{folder_id:Number($('rulefolder').value),field:$('rulefield').value,pattern});$('rulepattern').value='';setStatus('Regel gespeichert und auf vorhandene Links angewendet.')}catch(e){setStatus(e.message,true)}};
 $('localsuggest').onclick=async()=>{try{await api('suggest/local',{});setStatus('Lokale Stichwort-Vorschläge erstellt. Wähle einen Link und prüfe die Vorschläge.')}catch(e){setStatus(e.message,true)}};
 $('aisuggest').onclick=async()=>{if(!confirm('Die ausgewählten Link-Metadaten werden an dein LOKAL laufendes Ollama-Modell auf 127.0.0.1:11434 übertragen. Videos selbst kann die KI damit NICHT ansehen. Vorschläge werden nicht automatisch übernommen. Fortfahren?'))return;const available=activeItems().slice(0,20);if(!available.length)return setStatus('Keine Links für KI-Vorschläge ausgewählt.',true);$('aisuggest').disabled=true;setStatus('Lokale KI sortiert bis zu 20 Links …');try{await api('suggest/ai',{link_ids:available.map(x=>x.id),model:$('aimodel').value.trim()||'llama3.2'});setStatus('KI-Vorschläge erstellt. Öffne die Gruppen eines Links zur Prüfung.')}catch(e){setStatus(e.message,true)}finally{$('aisuggest').disabled=false}};
-async function loadLibrary(){try{const r=await fetch('/api/library');if(!r.ok)throw Error('Datenbank konnte nicht geladen werden');applyState(await r.json());if(!items.length){area='import';document.querySelectorAll('[data-area]').forEach(x=>x.classList.toggle('active',x.dataset.area==='import'));render()}setStatus(items.length?'Gespeicherte Bibliothek geladen.':'Bereit für deinen ersten Import.')}catch(e){setStatus(e.message,true)}}
 $('savesmart').onclick=async()=>{try{await api('inbox/settings',{auto_enabled:$('autoenabled').checked,threshold:Number($('autothreshold').value)});setStatus('Automatische Zuordnung eingestellt.')}catch(e){setStatus(e.message,true)}};
-loadLibrary();
-$('choose').onclick=()=>$('file').click();$('file').onchange=e=>importFile(e.target.files[0]);const drop=$('dropzone');for(const event of ['dragenter','dragover'])drop.addEventListener(event,e=>{e.preventDefault();drop.classList.add('drag')});for(const event of ['dragleave','drop'])drop.addEventListener(event,e=>{e.preventDefault();drop.classList.remove('drag')});drop.addEventListener('drop',e=>importFile(e.dataTransfer.files[0]));document.querySelectorAll('[data-area]').forEach(b=>b.onclick=()=>{area=b.dataset.area;if(area!=='topics'){selectedTopic=null;renderTopics()}if(area!=='tags'){termFilter=null;renderTextIndex()}document.querySelectorAll('[data-area]').forEach(x=>x.classList.toggle('active',x===b));render()});$('chatsearch').addEventListener('input',renderChats);$('clearchat').onclick=()=>{$('chats').value='';$('chatsearch').value='';render()};for(const id of ['search','chats','kind'])$(id).addEventListener(id==='search'?'input':'change',render);for(const [id,value] of [['gridbutton','grid'],['listbutton','list']])$(id).onclick=()=>{view=value;$('gridbutton').classList.toggle('active',view==='grid');$('listbutton').classList.toggle('active',view==='list');$('gridbutton').setAttribute('aria-pressed',String(view==='grid'));$('listbutton').setAttribute('aria-pressed',String(view==='list'));render()};
+$('choose').onclick=()=>$('file').click();$('file').onchange=e=>importFile(e.target.files[0]);
+const drop=$('dropzone');for(const ev of ['dragenter','dragover'])drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('drag')});for(const ev of ['dragleave','drop'])drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('drag')});drop.addEventListener('drop',e=>importFile(e.dataTransfer.files[0]));
+document.querySelectorAll('[data-area]').forEach(b=>b.onclick=()=>goArea(b.dataset.area));
+document.querySelectorAll('[data-tree]').forEach(c=>c.onclick=()=>openTree(c.dataset.tree,c.getAttribute('aria-expanded')!=='true'));
+$('search').addEventListener('input',render);$('kind').addEventListener('change',render);$('chats').addEventListener('change',()=>{renderTrees();render()});
+for(const [id,value] of [['gridbutton','grid'],['listbutton','list']])$(id).onclick=()=>{view=value;for(const [bid,v] of [['gridbutton','grid'],['listbutton','list']]){$(bid).classList.toggle('active',view===v);$(bid).setAttribute('aria-pressed',String(view===v))}render()};
 $('consent').onclick=()=>{if(!preview){if(!confirm('Instagram-Vorschauen laden Inhalte direkt von Instagram. Dabei können deine IP-Adresse und Browserdaten an Meta übertragen werden. Nur öffentliche und für Embeds freigegebene Beiträge funktionieren. Fortfahren?'))return;preview=true;$('consent').textContent='◉ Instagram-Vorschau deaktivieren'}else{preview=false;$('consent').textContent='◉ Instagram-Vorschau aktivieren'}render()};
-$('csv').onclick=()=>{const rows=activeItems(),keys=['area','chat','sender','date','kind','url','source'];const protect=s=>{let v=String(s??'');if(/^[\s]*[=+\-@]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"'};const csv='\ufeff'+[keys.join(';'),...rows.map(r=>keys.map(k=>protect(r[k])).join(';'))].join('\r\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='instakram-links.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);setStatus(rows.length+' Links als CSV exportiert.')};
+$('csv').onclick=()=>{const rows=activeItems(),keys=['area','chat','sender','date','kind','url','source'];const protect=s=>{let v=String(s??'');if(/^[\s]*[=+\-@]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"'};const csv='﻿'+[keys.join(';'),...rows.map(r=>keys.map(k=>protect(r[k])).join(';'))].join('\r\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='instakram-links.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);setStatus(rows.length+' Links als CSV exportiert.')};
+$('togglefilters').onclick=()=>toggleRight(!$('rightbar').classList.contains('open'));$('closefilters').onclick=()=>toggleRight(false);
+// Remember which right-hand panels are open.
+const panels=store.get('panels',{});document.querySelectorAll('details.panel').forEach(d=>{if(panels[d.dataset.panel]!==undefined)d.open=panels[d.dataset.panel];d.addEventListener('toggle',()=>{panels[d.dataset.panel]=d.open;store.set('panels',panels)})});
+for(const key of ['chat','tags','topics'])openTree(key,!!treeState.open[key]);
+
+async function loadLibrary(){try{const r=await fetch('/api/library');if(!r.ok)throw Error('Datenbank konnte nicht geladen werden');applyState(await r.json());if(!items.length){setArea('import');render()}setStatus(items.length?'':'Bereit für deinen ersten Import.')}catch(e){setStatus(e.message,true)}}
+loadLibrary();
 })();
 </script>
 </body></html>
