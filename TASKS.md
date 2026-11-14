@@ -1,7 +1,7 @@
 # Operatives Backlog
 
 ## ENC-001 – Mojibake aus Instagram-Exporten reparieren
-- Status: In Review (PR #1). Parser repariert UTF-8-als-Latin-1-Text; bestehende
+- Status: Abgeschlossen (PR #1, gemergt als `663191d`, CI grün). Parser repariert UTF-8-als-Latin-1-Text; bestehende
   Datenbanken werden einmalig beim Start ohne Duplikate repariert.
 
 ## SET-001 – Standardwert der automatischen Gruppenzuordnung prüfen
