@@ -57,6 +57,14 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 .buttonrow{display:flex;gap:8px;flex-wrap:wrap}
 .hint{color:#888199;font-size:12px;line-height:1.55;margin:10px 0}
 .notice{margin:0 0 14px;padding:11px 14px;background:#262031;border:1px solid #433451;border-radius:11px;color:#d8c0e7;font-size:13px;line-height:1.6}
+.headtools{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.toggle{display:inline-flex;align-items:center;gap:8px;border:1px solid #42394d;background:#1b1822;color:#e6dcf3;border-radius:10px;padding:6px 10px;font-size:13px}
+.toggle-track{position:relative;width:38px;height:22px;border-radius:99px;background:#7a2d3a;transition:background .15s;flex:none}
+.toggle-knob{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .15s}
+.toggle[aria-checked=true] .toggle-track{background:#1f9d55}
+.toggle[aria-checked=true] .toggle-knob{transform:translateX(16px)}
+.toggle-state{min-width:22px;font-weight:700;font-size:12px;color:#f08a9a}
+.toggle[aria-checked=true] .toggle-state{color:#5be08f}
 .headline{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:4px 0 10px}
 .sectiontitle{font-size:21px;font-weight:800;letter-spacing:-.6px;margin:0}
 .meta{font-size:13px;color:#9992aa;margin-left:10px;font-weight:500;letter-spacing:0}
@@ -167,7 +175,8 @@ input[type=file]{display:none}
   <div class="notice" id="status" role="status" hidden></div>
   <div id="results" hidden>
     <div class="headline"><h2 class="sectiontitle"><span id="sectiontitle">Deine Link-Bibliothek</span><span class="meta" id="filtercount">0 Ergebnisse</span></h2>
-      <div class="switch"><button id="gridbutton" class="active" aria-pressed="true">Kacheln</button><button id="listbutton" aria-pressed="false">Liste</button></div></div>
+      <div class="headtools"><button id="consent" class="toggle" role="switch" aria-checked="false" title="Instagram-Vorschauen laden Inhalte direkt von Instagram (nur nach Zustimmung)."><span class="toggle-label">Instagram-Vorschau</span><span class="toggle-track" aria-hidden="true"><span class="toggle-knob"></span></span><span class="toggle-state">Aus</span></button>
+      <div class="switch"><button id="gridbutton" class="active" aria-pressed="true">Kacheln</button><button id="listbutton" aria-pressed="false">Liste</button></div></div></div>
     <div class="filterbar" id="filterbar"></div>
     <div id="content"></div>
   </div>
@@ -180,8 +189,7 @@ input[type=file]{display:none}
     <input class="field" id="search" placeholder="⌕  Link, Chat, Creator, Beschreibung …" aria-label="Links durchsuchen">
     <select class="field" id="chats" aria-label="Chat auswählen"><option value="">Alle Chats</option></select>
     <select class="field" id="kind" aria-label="Inhaltstyp"><option value="">Alle Typen</option><option value="reel">Reels</option><option value="post">Beiträge</option><option value="story">Stories</option><option value="instagram">Instagram-Links</option><option value="external">Andere Links</option></select>
-    <button class="secondary" id="consent">◉ Instagram-Vorschau aktivieren</button>
-    <div class="hint" id="embedinfo">Vorschauen sind standardmäßig aus. Nach Zustimmung lädt Instagrams Embed-Skript öffentliche Reels/Beiträge; private oder gelöschte Inhalte sind meist nicht einbettbar.</div>
+    <div class="hint" id="embedinfo">Instagram-Vorschauen (Schalter oben rechts) sind standardmäßig aus. Nach Zustimmung lädt Instagrams Embed-Skript öffentliche Reels/Beiträge; private oder gelöschte Inhalte sind meist nicht einbettbar.</div>
     <button class="secondary" id="csv">↓ Gefilterte Links als CSV</button>
   </div></details>
   <details class="panel" data-panel="folders" open><summary>Ordner &amp; Gruppen</summary><div class="body">
@@ -331,7 +339,7 @@ function counts(){
 }
 
 /* ---------- data ---------- */
-async function importFile(file){if(!file)return;if(!/\.(json|zip)$/i.test(file.name)){setStatus('Bitte eine ZIP- oder JSON-Datei auswählen.',true);return}if(file.size>800*1024*1024){setStatus('Die Datei überschreitet 800 MB.',true);return}const version=++loadVersion;setStatus('Datei wird lokal verarbeitet …');$('choose').disabled=true;try{const response=await fetch('/api/import',{method:'POST',headers:{'Content-Type':'application/octet-stream','X-Filename':file.name.replace(/[^\w.-]/g,'_')},body:file});const data=await response.json();if(!response.ok)throw Error(data.error||'Import fehlgeschlagen');if(version!==loadVersion)return;$('search').value='';$('kind').value='';$('chats').value='';termFilter=null;selectedTopic=null;preview=false;$('consent').textContent='◉ Instagram-Vorschau aktivieren';setArea('all');applyState(data);setStatus(fmt(items.length)+' Links in der Bibliothek · '+data.jsonFiles+' JSON-Dateien gelesen'+(data.errors?' · '+data.errors+' Dateien übersprungen':'')+'.')}catch(error){setStatus(error.message||'Import fehlgeschlagen',true)}finally{$('choose').disabled=false}}
+async function importFile(file){if(!file)return;if(!/\.(json|zip)$/i.test(file.name)){setStatus('Bitte eine ZIP- oder JSON-Datei auswählen.',true);return}if(file.size>800*1024*1024){setStatus('Die Datei überschreitet 800 MB.',true);return}const version=++loadVersion;setStatus('Datei wird lokal verarbeitet …');$('choose').disabled=true;try{const response=await fetch('/api/import',{method:'POST',headers:{'Content-Type':'application/octet-stream','X-Filename':file.name.replace(/[^\w.-]/g,'_')},body:file});const data=await response.json();if(!response.ok)throw Error(data.error||'Import fehlgeschlagen');if(version!==loadVersion)return;$('search').value='';$('kind').value='';$('chats').value='';termFilter=null;selectedTopic=null;preview=false;setPreview(false);setArea('all');applyState(data);setStatus(fmt(items.length)+' Links in der Bibliothek · '+data.jsonFiles+' JSON-Dateien gelesen'+(data.errors?' · '+data.errors+' Dateien übersprungen':'')+'.')}catch(error){setStatus(error.message||'Import fehlgeschlagen',true)}finally{$('choose').disabled=false}}
 async function api(route,data){const response=await fetch('/api/'+route,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const body=await response.json();if(!response.ok)throw Error(body.error||'Aktion fehlgeschlagen');applyState(body);return body}
 function applyState(data){items=data.items||[];if(data.textIndex)textIndex=data.textIndex;folders=data.folders||[];rules=data.rules||[];settings=data.settings||settings;if(data.chats)chatInfo=Object.fromEntries(data.chats.map(c=>[c.chat,c]));$('autoenabled').checked=!!settings.auto_enabled;$('autothreshold').value=String(settings.threshold);if(termFilter&&!(textIndex[termFilter.type]||[]).some(e=>e.term===termFilter.term))termFilter=null;renderFolders();renderRules();counts();refreshTopics();if(selectedLink){selectedLink=items.find(x=>x.id===selectedLink.id)||null;renderSelection()}}
 function groupOptions(select,includeRoot=false){select.replaceChildren();if(includeRoot)select.add(new Option('Hauptebene',''));for(const f of folders)select.add(new Option(f.path,String(f.id)))}
@@ -367,7 +375,8 @@ document.querySelectorAll('[data-area]').forEach(b=>b.onclick=()=>goArea(b.datas
 document.querySelectorAll('[data-tree]').forEach(c=>c.onclick=()=>openTree(c.dataset.tree,c.getAttribute('aria-expanded')!=='true'));
 $('search').addEventListener('input',render);$('kind').addEventListener('change',render);$('chats').addEventListener('change',()=>{renderTrees();render()});
 for(const [id,value] of [['gridbutton','grid'],['listbutton','list']])$(id).onclick=()=>{view=value;for(const [bid,v] of [['gridbutton','grid'],['listbutton','list']]){$(bid).classList.toggle('active',view===v);$(bid).setAttribute('aria-pressed',String(view===v))}render()};
-$('consent').onclick=()=>{if(!preview){if(!confirm('Instagram-Vorschauen laden Inhalte direkt von Instagram. Dabei können deine IP-Adresse und Browserdaten an Meta übertragen werden. Nur öffentliche und für Embeds freigegebene Beiträge funktionieren. Fortfahren?'))return;preview=true;$('consent').textContent='◉ Instagram-Vorschau deaktivieren'}else{preview=false;$('consent').textContent='◉ Instagram-Vorschau aktivieren'}render()};
+function setPreview(on){preview=on;$('consent').setAttribute('aria-checked',String(on));$('consent').querySelector('.toggle-state').textContent=on?'An':'Aus'}
+$('consent').onclick=()=>{if(!preview){if(!confirm('Instagram-Vorschauen laden Inhalte direkt von Instagram. Dabei können deine IP-Adresse und Browserdaten an Meta übertragen werden. Nur öffentliche und für Embeds freigegebene Beiträge funktionieren. Fortfahren?'))return;setPreview(true)}else setPreview(false);render()};
 $('csv').onclick=()=>{const rows=activeItems(),keys=['area','chat','sender','date','kind','url','source'];const protect=s=>{let v=String(s??'');if(/^[\s]*[=+\-@]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"'};const csv='﻿'+[keys.join(';'),...rows.map(r=>keys.map(k=>protect(r[k])).join(';'))].join('\r\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='instakram-links.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);setStatus(rows.length+' Links als CSV exportiert.')};
 $('togglefilters').onclick=()=>toggleRight(!$('rightbar').classList.contains('open'));$('closefilters').onclick=()=>toggleRight(false);
 // Remember which right-hand panels are open.
