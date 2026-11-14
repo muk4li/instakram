@@ -94,7 +94,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 .cardtags{display:flex;flex-wrap:wrap;gap:5px}.cardtags button{font-size:10px;background:#30233e;border:1px solid #493457;border-radius:16px;color:#dcb7f1;padding:5px 7px}.cardtags button:hover{background:#493259}
 .tile-actions{display:flex;gap:7px;margin-top:auto}
 .tile-actions a,.tile-actions button{flex:1;border-radius:9px;border:1px solid #4a3d53;background:#2d2435;color:#e8d6fc;text-align:center;padding:9px 6px;font-size:12px;font-weight:700}
-.embed-slot{padding:13px;border-top:1px solid #332c3c;background:white;min-height:90px;display:flex;justify-content:center;align-items:flex-start}
+.embed-slot{position:relative;overflow:hidden;contain:paint;padding:13px;border-top:1px solid #332c3c;background:white;min-height:90px;display:flex;justify-content:center;align-items:flex-start}
+.embed-slot iframe{max-width:100%!important;min-width:0!important}
+.embed-slot blockquote.instagram-media:not(.instagram-media-rendered){border:0!important;box-shadow:none!important;padding:16px 8px!important;text-align:center;color:#4b3a5c;font-size:12px}
+.embed-slot a{color:#6b3fa3;font-weight:700;text-decoration:underline}
 .embed-slot .instagram-media{min-width:0!important;max-width:100%!important;width:100%!important;margin:0!important}
 .list{display:grid;gap:6px}
 .listrow{padding:12px 14px;background:#18151e;border:1px solid #302b38;border-radius:12px;display:grid;grid-template-columns:64px minmax(0,1fr) 160px 92px;align-items:center;gap:12px;font-size:12px}

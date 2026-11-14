@@ -33,7 +33,8 @@
 - Status: Offen, zusammen mit der neuen UI planen.
 - `/api/library` und jede POST-Antwort liefern alle Links (`all_links()`, mehrere
   Abfragen pro Link). Synthetisch gemessen: 100 000 Links 2 s / 55 MB,
-  500 000 Links 11 s / 275 MB je Aktion. Nötig: Paginierung/Filter serverseitig,
+  500 000 Links 11 s / 275 MB je Aktion. Teilweise entschärft: In-Memory-Cache im Server
+  (Neuladen ohne Neuaufbau; 20 000 Links: 0,69 s → 0,10 s). Nötig: Paginierung/Filter serverseitig,
   POST-Antworten nur mit geänderten Daten.
 
 ## META-001 – Export-Metadaten auswerten (Chats)

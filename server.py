@@ -18,6 +18,52 @@ DB = Library(Path(os.environ.get('INSTAKRAM_DB', str(HERE / 'data' / 'instakram.
 INDEX = HERE / "web" / "index.html"
 HOST, PORT = "127.0.0.1", 8765
 
+
+class LibraryCache:
+    """In-memory snapshot of the library for page reloads.
+
+    Building all links is the slow part for large libraries. Every write goes
+    through a POST request, which invalidates the snapshot first, so reads never
+    see stale data; the next read (or the POST response itself) rebuilds it.
+    """
+    def __init__(self, db):
+        self.db = db
+        self.lock = threading.Lock()
+        self.links = None
+        self.body = None
+        self.topics = None
+
+    def invalidate(self):
+        with self.lock:
+            self.links = self.body = self.topics = None
+
+    def payload(self, links=None):
+        with self.lock:
+            if links is not None:
+                self.links, self.body, self.topics = links, None, None
+            if self.links is None:
+                self.links = self.db.all_links()
+            return {"items": self.links, "folders": self.db.folders(), "rules": self.db.rules(),
+                    "settings": self.db.settings(), "textIndex": self.db.text_index(), "chats": self.db.chats()}
+
+    def library_body(self):
+        data = self.payload()
+        with self.lock:
+            if self.body is None:
+                self.body = json.dumps(data, ensure_ascii=False).encode("utf-8")
+            return self.body
+
+    def topics_body(self):
+        data = self.payload()
+        with self.lock:
+            if self.topics is None:
+                self.topics = json.dumps({"topics": cluster_topics(data["items"], data["folders"])},
+                                         ensure_ascii=False).encode("utf-8")
+            return self.topics
+
+
+CACHE = LibraryCache(DB)
+
 class Handler(BaseHTTPRequestHandler):
     def send(self, code, data, mime):
         self.send_response(code)
@@ -46,10 +92,9 @@ class Handler(BaseHTTPRequestHandler):
             return
         route = urlsplit(self.path).path
         if route == "/api/topics":
-            topics = cluster_topics(DB.all_links(), DB.folders())
-            self.send(200, json.dumps({"topics": topics}, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
+            self.send(200, CACHE.topics_body(), "application/json; charset=utf-8")
         elif route == "/api/library":
-            self.send(200, json.dumps({"items": DB.all_links(), "folders": DB.folders(), "rules": DB.rules(), "settings": DB.settings(), "textIndex": DB.text_index(), "chats": DB.chats()}, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
+            self.send(200, CACHE.library_body(), "application/json; charset=utf-8")
         elif route in ("/", "/index.html"):
             self.send(200, INDEX.read_bytes(), "text/html; charset=utf-8")
         else:
@@ -64,6 +109,7 @@ class Handler(BaseHTTPRequestHandler):
                          "/api/assign", "/api/topics/assign", "/api/inbox/review", "/api/inbox/undo", "/api/inbox/settings", "/api/rule", "/api/rule/delete", "/api/suggest/local", "/api/suggest/ai"):
             self.send(404, b"Not found", "text/plain")
             return
+        CACHE.invalidate()  # every POST may write; never serve a stale snapshot
         try:
             size = int(self.headers.get("Content-Length", "0"))
             max_size = MAX_ARCHIVE_BYTES if route == "/api/import" else 100_000
@@ -76,8 +122,7 @@ class Handler(BaseHTTPRequestHandler):
                     raise ValueError("Nur ZIP oder JSON unterstützt.")
                 imported = process_bytes(raw, filename)
                 items = DB.import_rows(imported["items"])
-                payload = {"items": items, "folders": DB.folders(), "rules": DB.rules(),
-                           "settings": DB.settings(), "textIndex": DB.text_index(), "chats": DB.chats(),
+                payload = {**CACHE.payload(links=items),
                            "jsonFiles": imported["jsonFiles"], "errors": imported["errors"]}
             else:
                 args = json.loads(raw.decode("utf-8"))
@@ -94,13 +139,14 @@ class Handler(BaseHTTPRequestHandler):
                 elif route == "/api/topics/assign":
                     topic_id = str(args["topic_id"])
                     folder_id = int(args["folder_id"])
-                    topic = next((t for t in cluster_topics(DB.all_links(), DB.folders()) if t["id"] == topic_id), None)
+                    topic = next((t for t in cluster_topics(CACHE.payload()["items"], DB.folders()) if t["id"] == topic_id), None)
                     if topic is None:
                         raise ValueError("Cluster wurde verändert. Bitte Themen aktualisieren.")
                     if not topic["link_ids"] or len(topic["link_ids"]) > 500:
                         raise ValueError("Es können maximal 500 Links auf einmal zugeordnet werden.")
                     for link_id in topic["link_ids"]:
                         DB.assign(link_id, folder_id, True)
+                    CACHE.invalidate()
                 elif route == "/api/inbox/review":
                     DB.review(str(args["link_id"]), args["folder_ids"], args.get("status","reviewed"))
                 elif route == "/api/inbox/undo":
@@ -115,7 +161,8 @@ class Handler(BaseHTTPRequestHandler):
                     DB.local_suggestions()
                 elif route == "/api/suggest/ai":
                     self.ai_suggest(args)
-                payload = {"items": DB.all_links(), "folders": DB.folders(), "rules": DB.rules(), "settings": DB.settings(), "textIndex": DB.text_index(), "chats": DB.chats()}
+                CACHE.invalidate()
+                payload = CACHE.payload()
             self.send(200, json.dumps(payload, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
         except (ValueError, KeyError, TypeError, OSError, OverflowError, json.JSONDecodeError) as exc:
             self.send(400, json.dumps({"error": str(exc)}, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
