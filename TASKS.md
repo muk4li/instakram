@@ -25,7 +25,7 @@
   committen, nur anonymisierte Befunde zurückmelden.
 
 ## IMP-002 – Importlimits erhöhen
-- Status: In Review (PR #4). ZIP 200 → 800 MB (Nutzer-Export 524 MB),
+- Status: Abgeschlossen (PR #4). ZIP 200 → 800 MB (Nutzer-Export 524 MB),
   JSON-Einzeldatei 80 → 150 MB (Likes-Datei des Nutzers 88,9 MB).
   Likes sowie Follower/Werbung/Login werden bewusst mitimportiert (Nutzerentscheidung).
 
@@ -35,3 +35,20 @@
   Abfragen pro Link). Synthetisch gemessen: 100 000 Links 2 s / 55 MB,
   500 000 Links 11 s / 275 MB je Aktion. Nötig: Paginierung/Filter serverseitig,
   POST-Antworten nur mit geänderten Daten.
+
+## META-001 – Export-Metadaten auswerten (Chats)
+- Status: In Review. `share_text` (Caption) und `original_content_owner` (Creator) geteilter
+  Beiträge, Chat-/Gruppenname und Teilnehmerzahl, Reaktionen, Quelltyp aus dem Pfad,
+  Relevanzsignale; Lernen nach exportiertem Creator. Behebt außerdem, dass die
+  Hashtag-Ansicht nach Import/Neuladen leer blieb. Erfordert einmaligen Reimport.
+
+## META-002 – Gespeichert/Likes im `label_values`-Format
+- Status: In Review (zusammen mit META-001). Struktur aus maskierter Probe des Nutzers:
+  oberste `URL` = Beitrag, `Untertitel` = Caption, `Benutzername` im Eigentümer-Block = Creator.
+  Die URL im Eigentümer-Block (z. B. Website) wird nicht mehr als eigener Link importiert.
+  Älteres Format (`title` + `string_map_data`/`string_list_data`) für Gespeichert/Likes ebenfalls.
+
+## UI-001 – Oberfläche überarbeiten
+- Status: Offen, Entwurf kommt vom Nutzer. Gewünscht: Import auf eigener Seite,
+  „Kopieren“ entfernen, Quellen- und Chat-Navigation, Sortierung nach Relevanz,
+  „Gruppen“-Zuordnung direkt am Link, Markierung „nicht mehr verfügbar“.

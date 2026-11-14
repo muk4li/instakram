@@ -49,7 +49,7 @@ class Handler(BaseHTTPRequestHandler):
             topics = cluster_topics(DB.all_links(), DB.folders())
             self.send(200, json.dumps({"topics": topics}, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
         elif route == "/api/library":
-            self.send(200, json.dumps({"items": DB.all_links(), "folders": DB.folders(), "rules": DB.rules(), "settings": DB.settings(), "textIndex": DB.text_index()}, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
+            self.send(200, json.dumps({"items": DB.all_links(), "folders": DB.folders(), "rules": DB.rules(), "settings": DB.settings(), "textIndex": DB.text_index(), "chats": DB.chats()}, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
         elif route in ("/", "/index.html"):
             self.send(200, INDEX.read_bytes(), "text/html; charset=utf-8")
         else:
@@ -77,6 +77,7 @@ class Handler(BaseHTTPRequestHandler):
                 imported = process_bytes(raw, filename)
                 items = DB.import_rows(imported["items"])
                 payload = {"items": items, "folders": DB.folders(), "rules": DB.rules(),
+                           "settings": DB.settings(), "textIndex": DB.text_index(), "chats": DB.chats(),
                            "jsonFiles": imported["jsonFiles"], "errors": imported["errors"]}
             else:
                 args = json.loads(raw.decode("utf-8"))
@@ -114,7 +115,7 @@ class Handler(BaseHTTPRequestHandler):
                     DB.local_suggestions()
                 elif route == "/api/suggest/ai":
                     self.ai_suggest(args)
-                payload = {"items": DB.all_links(), "folders": DB.folders(), "rules": DB.rules(), "settings": DB.settings()}
+                payload = {"items": DB.all_links(), "folders": DB.folders(), "rules": DB.rules(), "settings": DB.settings(), "textIndex": DB.text_index(), "chats": DB.chats()}
             self.send(200, json.dumps(payload, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
         except (ValueError, KeyError, TypeError, OSError, OverflowError, json.JSONDecodeError) as exc:
             self.send(400, json.dumps({"error": str(exc)}, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
