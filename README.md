@@ -26,6 +26,7 @@ Du benötigst nur **Python 3**. Keine zusätzlichen Pakete erforderlich.
 - Suche nach Links, Chat, Absender und Dateiname
 - Filter: Chat, gespeicherte Inhalte, Archiv, Inhaltstyp
 - Instagram-Reels, Posts und andere URLs erkennen
+- Kodierungskorrektur: Instagram-Exporte speichern Umlaute/Emojis fehlerhaft kodiert (z. B. „JÃ¼rgen“); Absender, Beschreibungen, Hashtags und Creator werden beim Import zu „Jürgen“ repariert, bestehende Datenbanken einmalig beim Start (ohne Duplikate, Zuordnungen bleiben erhalten).
 - Excel-kompatiblen CSV-Export erstellen
 - **Optionale Instagram-Einbettungen:** Nur nach ausdrücklicher Zustimmung lädt die App Instagrams offizielles Embed-Skript. Öffentliche Reels und Posts *können* als Vorschau angezeigt werden. Jeder Eintrag hat stets einen „Öffnen“-Link.
 

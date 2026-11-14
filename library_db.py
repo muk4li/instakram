@@ -5,6 +5,7 @@ import re
 import sqlite3
 from collections import defaultdict
 from text_analysis import hashtags, keywords
+from parser_core import fix_mojibake
 from urllib.parse import urlsplit
 from pathlib import Path
 
@@ -15,6 +16,8 @@ DEFAULT_CATEGORIES = (
 )
 FIELDS = ("url", "area", "chat", "sender", "date", "kind", "source")
 RULE_FIELDS = ("url", "chat", "sender", "kind", "area", "source", "caption")
+# Tables whose rows belong to a link (moved when a repaired URL changes the link id).
+LINK_CHILD_TABLES = ("occurrences", "assignments", "suggestions", "creators", "captions", "reviews", "feedback")
 MAX_NAME = 90
 
 class Library:
@@ -92,6 +95,50 @@ class Library:
             root = self._create_folder("groups")
             for category in DEFAULT_CATEGORIES:
                 self._create_folder(category, root)
+        done = self.conn.execute("SELECT 1 FROM preferences WHERE key='mojibake_repaired'").fetchone()
+        if not done:
+            self.repair_mojibake()
+
+    def repair_mojibake(self):
+        """Repair text stored by versions without Instagram encoding correction.
+
+        Only fields that the parser now repairs are touched (JSON-derived URL,
+        sender, date, caption, creator); chat and source come from file paths and
+        stay as they are. Rows that become identical to an existing row are merged
+        instead of duplicated. Folder assignments, reviews, feedback and suggestions
+        follow their link. Runs in one transaction and is idempotent.
+        """
+        with self.conn:
+            for link in self.conn.execute("SELECT id,url,sender,date FROM links").fetchall():
+                url = fix_mojibake(link["url"])
+                self.conn.execute("UPDATE links SET sender=?,date=? WHERE id=?",
+                                  (fix_mojibake(link["sender"]), fix_mojibake(link["date"]), link["id"]))
+                if url != link["url"]:
+                    self._move_link(link["id"], url)
+            for table, columns in (("occurrences", ("sender", "date")), ("captions", ("caption",)),
+                                   ("creators", ("creator",))):
+                cols = ",".join(columns)
+                for row in self.conn.execute(f"SELECT rowid,{cols} FROM {table}").fetchall():
+                    fixed = [fix_mojibake(row[c]) for c in columns]
+                    if fixed == [row[c] for c in columns]:
+                        continue
+                    sets = ",".join(f"{c}=?" for c in columns)
+                    cur = self.conn.execute(f"UPDATE OR IGNORE {table} SET {sets} WHERE rowid=?", (*fixed, row["rowid"]))
+                    if cur.rowcount == 0:
+                        # An identical, already correct row exists: drop the broken duplicate.
+                        self.conn.execute(f"DELETE FROM {table} WHERE rowid=?", (row["rowid"],))
+            self.conn.execute("INSERT OR REPLACE INTO preferences(key,value) VALUES('mojibake_repaired','1')")
+
+    def _move_link(self, old_id, url):
+        """Re-key a link whose URL text changed; merge into an existing link with that URL."""
+        new_id = self._link_id(url)
+        if not self.conn.execute("SELECT 1 FROM links WHERE id=?", (new_id,)).fetchone():
+            self.conn.execute("""INSERT INTO links(id,url,area,chat,sender,date,kind,source)
+                SELECT ?,?,area,chat,sender,date,kind,source FROM links WHERE id=?""", (new_id, url, old_id))
+        for table in LINK_CHILD_TABLES:
+            # On a key conflict the existing row of the target link wins.
+            self.conn.execute(f"UPDATE OR IGNORE {table} SET link_id=? WHERE link_id=?", (new_id, old_id))
+        self.conn.execute("DELETE FROM links WHERE id=?", (old_id,))
 
     @staticmethod
     def _valid_name(name):
