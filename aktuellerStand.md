@@ -1,5 +1,9 @@
 # Aktueller Stand von instakram
 
+**Dokumentationsabgleich 2026-11-22 · Codebasis:** `main` [`fddb7e9`](https://github.com/muk4li/instakram/commit/fddb7e9ca1b2f5a7da2efa10d09922d1ee21c63b). Local-first Python-/SQLite-App; kein authentik-/VPS-Deployment. Frühere lokale Prüfbelege und Produktgrenzen stehen im historischen Snapshot unten; keine neuen Code-/Live-Tests in diesem Doku-Abgleich. Centrality ADR-011 ist als Feedback-Backlog `IK-FB1` notiert, abhängig vom noch nicht freigegebenen öffentlichen feetbackhurts-Ingest. Keine UI-Implementierung.
+
+## Historischer Snapshot
+
 **Stand:** 2026-11-14 · **Basis-Commit:** `16701e3` auf `main`
 
 - **Läuft:** Lokaler Import von Instagram-Exporten (ZIP bis 800 MB, JSON bis 150 MB) in SQLite,
