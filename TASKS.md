@@ -55,3 +55,8 @@
   rechte aufklappbare Filter-/Ordnerleiste, Kennzahlen in der Navigation).
   Offen: Quellen-Navigation, Sortierung nach Relevanz,
   „Gruppen“-Zuordnung direkt am Link, Markierung „nicht mehr verfügbar“.
+
+## IK-FB1 – Einheitliches Web-Feedback (Backlog)
+- **Status:** geplant, keine implementierte UI. Grundlage [Centrality ADR-011](https://github.com/muk4li/centrality/blob/main/docs/decisions/ADR-011-ECOSYSTEM-FEEDBACK.md) und [feetbackhurts-Vertrag v1](https://github.com/muk4li/feetbackhurts/blob/main/docs/CONTRACT.md), `appId=instakram`.
+- Dezenter Link unten links, Fehler/Idee/Titel/Beschreibung/optionale Reproduktionsschritte. **Keine** automatischen Exporte, Nachrichten, Profilinformationen, Tokens oder vollständige URLs mitsenden.
+- **Abhängigkeit:** öffentlicher feetbackhurts-Ingest erst nach Security-/Datenschutz-/Restore-Freigabe (FH-003); erst dann eigener kleiner UI-PR mit synthetischem End-to-End-Test. Lokale Anwendung bleibt unverändert.
