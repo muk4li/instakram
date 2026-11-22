@@ -65,3 +65,5 @@ python -m unittest discover -s tests -v
 ```
 
 Nur Standardbibliothek, ausschließlich synthetische Testdaten. CI (GitHub Actions) läuft derzeit mit Python 3.12 auf Ubuntu.
+
+> **Dokumentationsabgleich (2026-11-22):** Diese Anwendung bleibt local-first; ein authentik-/VPS-Deployment nach [Centrality ADR-008](https://github.com/muk4li/centrality/blob/main/docs/decisions/ADR-008-OEFFENTLICHE-APPS-MIT-LOGIN.md) ist nicht nachgewiesen. [ADR-011](https://github.com/muk4li/centrality/blob/main/docs/decisions/ADR-011-ECOSYSTEM-FEEDBACK.md) ist mit `IK-FB1` nur als künftiger Feedback-Backlog dokumentiert; kein öffentlich freigegebenes feetbackhurts-Ingest, keine UI-Implementierung.
